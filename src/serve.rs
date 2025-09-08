@@ -35,6 +35,7 @@ use tokio_stream::wrappers::UnboundedReceiverStream;
 const DEFAULT_MODEL_NAME: &str = "default";
 const PLAYGROUND_HTML: &[u8] = include_bytes!("../assets/playground.html");
 const ARENA_HTML: &[u8] = include_bytes!("../assets/arena.html");
+const ENHANCED_GUI_HTML: &[u8] = include_bytes!("../assets/enhanced-gui.html");
 
 type AppResponse = Response<BoxBody<Bytes, Infallible>>;
 
@@ -57,6 +58,7 @@ pub async fn run(config: GlobalConfig, addr: Option<String>) -> Result<()> {
     println!("Chat Completions API: http://{addr}/v1/chat/completions");
     println!("Embeddings API:       http://{addr}/v1/embeddings");
     println!("Rerank API:           http://{addr}/v1/rerank");
+    println!("Enhanced GUI:         http://{addr}/");
     println!("LLM Playground:       http://{addr}/playground");
     println!("LLM Arena:            http://{addr}/arena?num=2");
     shutdown_signal().await;
@@ -173,6 +175,8 @@ impl Server {
             self.playground_page()
         } else if path == "/arena" || path == "/arena.html" {
             self.arena_page()
+        } else if path == "/" || path == "/gui" || path == "/gui.html" || path == "/enhanced-gui" {
+            self.enhanced_gui_page()
         } else {
             status = StatusCode::NOT_FOUND;
             Err(anyhow!("Not Found"))
@@ -206,6 +210,13 @@ impl Server {
         let res = Response::builder()
             .header("Content-Type", "text/html; charset=utf-8")
             .body(Full::new(Bytes::from(ARENA_HTML)).boxed())?;
+        Ok(res)
+    }
+
+    fn enhanced_gui_page(&self) -> Result<AppResponse> {
+        let res = Response::builder()
+            .header("Content-Type", "text/html; charset=utf-8")
+            .body(Full::new(Bytes::from(ENHANCED_GUI_HTML)).boxed())?;
         Ok(res)
     }
 

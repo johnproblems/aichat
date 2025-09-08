@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Console Theme - Demo</title>
+    <link rel="stylesheet" href="matrix-console-theme.css">
+    <script src="matrix-effects.js"></script>
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .demo-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            background: var(--bg-secondary);
+        }
+        
+        .demo-title {
+            color: var(--matrix-green-bright);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-shadow: var(--matrix-glow);
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .demo-item {
+            padding: 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+        }
+        
+        .code-example {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid var(--matrix-green-dark);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="crt-screen">
+    <div class="demo-container">
+        <!-- Header -->
+        <header class="matrix-panel" style="padding: 2rem; margin-bottom: 2rem;">
+            <h1 class="matrix-title" style="font-size: 2.5rem; text-align: center;">
+                MATRIX CONSOLE THEME
+            </h1>
+            <p class="matrix-subtitle" style="text-align: center; font-size: 1.1rem;">
+                // NEURAL INTERFACE DEMONSTRATION //
+            </p>
+        </header>
+
+        <!-- Typography Section -->
+        <section class="demo-section">
+            <h2 class="demo-title">&gt; TYPOGRAPHY & TEXT EFFECTS</h2>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Matrix Text Styles</h3>
+                    <p class="matrix-text">Default matrix text with glow</p>
+                    <p class="matrix-text-bright">Bright matrix text</p>
+                    <p class="matrix-text-medium">Medium matrix text</p>
+                    <p class="matrix-text-dark">Dark matrix text</p>
+                    <p class="matrix-glow-text">Text with glow effect</p>
+                    <p class="matrix-glow-strong-text">Text with strong glow</p>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Typewriter Effect</h3>
+                    <p id="typewriter-demo" class="matrix-text"></p>
+                    <button class="matrix-btn" onclick="startTypewriter()">Start Typewriter</button>
+                    
+                    <div class="code-example">
+MatrixEffects.typewriter(element, 'Hello Matrix!', 100);
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Matrix Text Reveal</h3>
+                    <p id="reveal-demo" class="matrix-text">ORIGINAL TEXT</p>
+                    <button class="matrix-btn" onclick="startReveal()">Start Reveal</button>
+                    
+                    <div class="code-example">
+MatrixEffects.matrixTextReveal(element, 'DECODED TEXT', 2000);
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Glitch Effect</h3>
+                    <p id="glitch-demo" class="matrix-text">SYSTEM ERROR</p>
+                    <button class="matrix-btn" onclick="startGlitch()">Trigger Glitch</button>
+                    
+                    <div class="code-example">
+MatrixEffects.glitchEffect(element, 2000);
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UI Components Section -->
+        <section class="demo-section">
+            <h2 class="demo-title">&gt; UI COMPONENTS</h2>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Buttons</h3>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+                        <button class="matrix-btn">Default Button</button>
+                        <button class="matrix-btn matrix-success">Success Button</button>
+                        <button class="matrix-btn matrix-error">Error Button</button>
+                        <button class="matrix-btn matrix-warning">Warning Button</button>
+                        <button class="matrix-btn matrix-disabled">Disabled Button</button>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Form Elements</h3>
+                    <div class="matrix-form-group">
+                        <label class="matrix-label">Input Field:</label>
+                        <input type="text" class="matrix-input" placeholder="Enter data...">
+                    </div>
+                    <div class="matrix-form-group">
+                        <label class="matrix-label">Select Field:</label>
+                        <select class="matrix-select">
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                        </select>
+                    </div>
+                    <div class="matrix-form-group">
+                        <label class="matrix-label">Textarea:</label>
+                        <textarea class="matrix-textarea" placeholder="Enter message..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Messages</h3>
+                    <div class="matrix-message user">
+                        <strong>&gt; USER:</strong> This is a user message
+                    </div>
+                    <div class="matrix-message assistant">
+                        <strong>&gt; AI:</strong> This is an assistant response
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Loading Animation</h3>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="matrix-loading"></div>
+                        <span class="matrix-text">Processing...</span>
+                    </div>
+                    <div class="matrix-typing" style="margin-top: 1rem;">
+                        <span>AI is thinking</span>
+                        <div class="matrix-typing-dots">
+                            <div class="matrix-typing-dot"></div>
+                            <div class="matrix-typing-dot"></div>
+                            <div class="matrix-typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Demos Section -->
+        <section class="demo-section">
+            <h2 class="demo-title">&gt; INTERACTIVE DEMONSTRATIONS</h2>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Notifications</h3>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="matrix-btn" onclick="showNotification('success')">Success</button>
+                        <button class="matrix-btn" onclick="showNotification('error')">Error</button>
+                        <button class="matrix-btn" onclick="showNotification('warning')">Warning</button>
+                        <button class="matrix-btn" onclick="showNotification('info')">Info</button>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Progress Bar</h3>
+                    <div id="progress-container" style="margin: 1rem 0;"></div>
+                    <button class="matrix-btn" onclick="startProgress()">Start Progress</button>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Modal Dialog</h3>
+                    <button class="matrix-btn" onclick="showModal()">Show Modal</button>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Loading Animation</h3>
+                    <div id="loading-container"></div>
+                    <button class="matrix-btn" onclick="toggleLoading()">Toggle Loading</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Code Examples Section -->
+        <section class="demo-section">
+            <h2 class="demo-title">&gt; CODE EXAMPLES</h2>
+            
+            <div class="demo-item">
+                <h3 class="matrix-text-bright">Matrix Code Block</h3>
+                <div class="matrix-code">
+<pre>// Matrix Console Theme Usage
+const matrix = new MatrixEffects();
+
+// Initialize effects
+matrix.init();
+
+// Add typewriter effect
+matrix.typewriter(element, 'Hello Matrix!', 50);
+
+// Add glitch effect
+matrix.glitchEffect(element, 1000);
+
+// Show notification
+matrix.showNotification('System Online', 'success');
+
+// Create progress bar
+const progress = matrix.createProgressBar(container, 0);
+progress.update(75);</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Avatar Demo -->
+        <section class="demo-section">
+            <h2 class="demo-title">&gt; AVATARS & CHAT ELEMENTS</h2>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Chat Avatars</h3>
+                    <div style="display: flex; gap: 1rem; align-items: center; margin: 1rem 0;">
+                        <div class="matrix-avatar">AI</div>
+                        <span class="matrix-text">Assistant Avatar</span>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div class="matrix-avatar user">USR</div>
+                        <span class="matrix-text">User Avatar</span>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <h3 class="matrix-text-bright">Links</h3>
+                    <p>
+                        <a href="#" class="matrix-link">Matrix Link Example</a><br>
+                        <a href="#" class="matrix-link">Another Matrix Link</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let currentLoading = null;
+        let currentProgress = null;
+
+        function startTypewriter() {
+            const element = document.getElementById('typewriter-demo');
+            MatrixEffects.typewriter(element, 'ACCESSING MAINFRAME... CONNECTION ESTABLISHED.', 75);
+        }
+
+        function startReveal() {
+            const element = document.getElementById('reveal-demo');
+            MatrixEffects.matrixTextReveal(element, 'MATRIX DECODED SUCCESSFULLY', 2000);
+        }
+
+        function startGlitch() {
+            const element = document.getElementById('glitch-demo');
+            MatrixEffects.glitchEffect(element, 2000);
+        }
+
+        function showNotification(type) {
+            const messages = {
+                success: 'OPERATION COMPLETED SUCCESSFULLY',
+                error: 'SYSTEM ERROR DETECTED',
+                warning: 'WARNING: UNAUTHORIZED ACCESS ATTEMPT',
+                info: 'INFORMATION: MATRIX PROTOCOL ACTIVE'
+            };
+            MatrixEffects.showNotification(messages[type], type);
+        }
+
+        function startProgress() {
+            const container = document.getElementById('progress-container');
+            container.innerHTML = '';
+            
+            const progress = MatrixEffects.createProgressBar(container, 0);
+            let value = 0;
+            
+            const interval = setInterval(() => {
+                value += Math.random() * 10;
+                if (value >= 100) {
+                    value = 100;
+                    clearInterval(interval);
+                    MatrixEffects.showNotification('DOWNLOAD COMPLETE', 'success');
+                }
+                progress.update(value);
+            }, 200);
+        }
+
+        function showModal() {
+            MatrixEffects.createModal(
+                'MATRIX SYSTEM ALERT',
+                'This is a demonstration of the Matrix-style modal dialog. The neural interface is functioning within normal parameters.',
+                [
+                    { text: 'ACKNOWLEDGE', callback: () => MatrixEffects.showNotification('ACKNOWLEDGED', 'success') },
+                    { text: 'CANCEL', callback: () => MatrixEffects.showNotification('CANCELLED', 'warning') }
+                ]
+            );
+        }
+
+        function toggleLoading() {
+            const container = document.getElementById('loading-container');
+            
+            if (currentLoading) {
+                currentLoading.destroy();
+                currentLoading = null;
+            } else {
+                currentLoading = MatrixEffects.createLoadingAnimation(container, 'PROCESSING DATA');
+            }
+        }
+
+        // Initialize effects when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add effects to all buttons
+            document.querySelectorAll('.matrix-btn').forEach(btn => {
+                MatrixEffects.addButtonEffect(btn);
+            });
+            
+            // Add effects to all inputs
+            document.querySelectorAll('.matrix-input, .matrix-textarea, .matrix-select').forEach(input => {
+                MatrixEffects.addInputEffect(input);
+            });
+            
+            // Start initial typewriter effect
+            setTimeout(() => {
+                startTypewriter();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

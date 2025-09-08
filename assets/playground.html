@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-  <title>AIChat LLM Playground</title>
+  <title>AIChat - Matrix Console</title>
   <link rel="stylesheet" href="//unpkg.com/katex@0.16.11/dist/katex.min.css">
   <link rel="stylesheet" href="//unpkg.com/github-markdown-css@5.8.1/github-markdown.css">
   <link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.10.0/styles/github-dark.min.css"
@@ -19,15 +19,24 @@
   <script src="//unpkg.com/alpinejs@3.14.6/dist/cdn.min.js" defer></script>
   <style>
     :root {
-      --fg-primary: #1652f1;
-      --fg-default: black;
-      --bg-primary: white;
-      --bg-default: #f9f9f9;
-      --bg-toast: rgba(0, 0, 0, 0.7);
-      --bg-cover: rgba(0, 0, 0, 0.5);
-      --bg-hover: #f0f0f0;
-      --border-color: #c3c3c3;
-      --shadow-color: rgba(0, 0, 0, 0.1);
+      /* Matrix Console Theme */
+      --matrix-green-bright: #00FF00;
+      --matrix-green: #00CC00;
+      --matrix-green-dark: #008800;
+      --matrix-green-darker: #004400;
+      --matrix-black: #000000;
+      --matrix-dark-green: #001100;
+      --matrix-glow: 0 0 10px #00FF00;
+      
+      --fg-primary: var(--matrix-green-bright);
+      --fg-default: var(--matrix-green);
+      --bg-primary: var(--matrix-black);
+      --bg-default: var(--matrix-dark-green);
+      --bg-toast: rgba(0, 255, 0, 0.1);
+      --bg-cover: rgba(0, 0, 0, 0.8);
+      --bg-hover: var(--matrix-green-darker);
+      --border-color: var(--matrix-green-dark);
+      --shadow-color: rgba(0, 255, 0, 0.3);
     }
 
     [x-cloak] {
@@ -35,7 +44,7 @@
     }
 
     html {
-      font-family: Noto Sans, SF Pro SC, SF Pro Text, SF Pro Icons, PingFang SC, Helvetica Neue, Helvetica, Arial, sans-serif
+      font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
     }
 
     body,
@@ -54,12 +63,13 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Courier New', 'Monaco', 'Consolas', monospace !important;
       font-size: 1rem;
       display: flex;
       height: 100vh;
-      color: var(--fg-default);
-      background-color: var(--bg-default);
+      color: var(--fg-default) !important;
+      background-color: var(--bg-default) !important;
+      text-shadow: 0 0 5px currentColor;
     }
 
     .container {
@@ -245,7 +255,27 @@
       width: 100%;
       padding: 0;
       flex-direction: column;
-      background-color: var(--bg-primary);
+      background-color: var(--bg-primary) !important;
+      color: var(--fg-default) !important;
+    }
+
+    /* Force all text in markdown content to be Matrix green */
+    .markdown-body *,
+    .markdown-body p,
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3,
+    .markdown-body h4,
+    .markdown-body h5,
+    .markdown-body h6,
+    .markdown-body li,
+    .markdown-body span,
+    .markdown-body div,
+    .markdown-body strong,
+    .markdown-body em,
+    .markdown-body a {
+      color: var(--fg-default) !important;
+      background-color: transparent !important;
     }
 
     .markdown-body:first-child {
@@ -510,19 +540,7 @@
       }
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --fg-primary: #1652f1;
-        --fg-default: white;
-        --bg-primary: black;
-        --bg-default: #121212;
-        --bg-toast: rgba(255, 255, 255, 0.7);
-        --bg-cover: rgba(255, 255, 255, 0.5);
-        --bg-hover: #1f1f1f;
-        --border-color: #3c3c3c;
-        --shadow-color: rgba(255, 255, 255, 0.1);
-      }
-    }
+    /* Removed dark mode media query to keep Matrix theme persistent */
 
     @media screen and (max-width: 768px) {
       body {

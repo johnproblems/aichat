@@ -1,0 +1,88 @@
+
+
+## Project Overview
+
+An AI chat application � allowing users to leverage OpenRouter's AI models through their own API keys or a marketplace system. The app provides advanced chat capabilities, document processing, and a peer-to-peer billing system. 
+
+### Core Features
+-**Secure �Production Authentication System �using appwrite plug and �play �with �appwrite or supabase cloud details**
+- **AI Chat Interface**: Large context windows with live AI responses
+- **API Key Marketplace**: User-driven marketplace for OpenRouter API keys
+- **Document Processing**: Upload and chat with documents
+- **Web Search Integration**: DuckDuckGo and Google search capabilities
+- **Cloud Storage**: Google Drive and OneDrive integration
+- **Peer-to-Peer Billing**: Stripe integration for marketplace transactions
+- **Analytics Dashboard**: User and system-wide analytics
+-** Multi Provider Chat** Chat with multi providers at the same time 
+### Tech Stack
+- **Frontend**: Next.js 15 (TypeScript) with MakerKit SaaS modules
+- **Backend**: Supabase (PostgreSQL) with Row Level Security or appwrite 
+- **AI Integration**: OpenRouter API with multiple model support
+- **Payment Processing**: Stripe (with potential CashApp integration)
+- **Cloud Storage**: Google Drive API, OneDrive API
+- **Search**: DuckDuckGo API, Google Search API
+
+
+
+# Key Features Detailed
+
+### API Key Marketplace
+- **User Key Sharing**: Users can share their OpenRouter API keys
+- **Dynamic Pricing**: Real-time model pricing from OpenRouter API
+- **Custom Pricing**: Users set margins above OpenRouter base prices
+- **Capacity Management**: Dollar amount limits with automatic switching
+- **Subscription Plans**: Custom subscription models for key access
+
+### Chat Interface
+- **Large Context Windows**: Extended conversation memory
+- **Live Cost Estimator**: Real-time cost tracking per message
+- **Model Selection**: Choose from available OpenRouter models
+- **Response Streaming**: Live AI response display
+- **Conversation History**: Persistent chat sessions
+
+### Document Processing
+- **Multi-Format Support**: PDF, DOCX, TXT file uploads
+- **Document Chat**: AI conversations about uploaded content
+- **Cloud Integration**: Direct upload from Google Drive/OneDrive
+- **Context Preservation**: Document context in chat sessions
+
+### Web Search Integration
+- **DuckDuckGo**: Free search provider integration
+- **Google Search**: Premium search with API key
+- **Search Results**: AI-powered search result analysis
+- **Citation Tracking**: Source attribution in responses
+
+### Billing System
+- **Peer-to-Peer Payments**: Direct user-to-user transactions
+- **Stripe Integration**: Secure payment processing
+- **Usage Tracking**: Detailed cost breakdown per session
+- **Subscription Management**: Recurring payment handling
+- **CashApp Consideration**: Alternative payment method evaluation
+
+### Analytics & Reporting
+- **User Analytics**: Personal usage statistics and trends
+- **Super Admin Dashboard**: System-wide marketplace analytics
+- **PDF Reports**: Exportable analytics and usage reports
+- **Cost Tracking**: Detailed spending analysis per user
+- **Performance Metrics**: Response times and model performance
+
+## Development Guidelines
+
+### Security Considerations
+- **API Key Encryption**: Secure storage of user OpenRouter keys
+- **Rate Limiting**: Prevent abuse of shared API keys
+- **Payment Security**: PCI compliance for payment processing
+- **Data Privacy**: User data protection and GDPR compliance
+
+### Performance Optimization
+- **Response Streaming**: Real-time AI response display
+- **Context Management**: Efficient handling of large conversation histories
+- **Cost Optimization**: Smart model selection based on task complexity
+- **Caching Strategy**: Reduce API calls and improve response times
+
+### User Experience Design
+- **Seamless Integration**: Native feel within existing Twitch ecosystem
+- **Progressive Disclosure**: Advanced features revealed as needed
+- **Mobile Responsiveness**: Full functionality on mobile devices
+- **Accessibility**: WCAG compliance for inclusive design
+

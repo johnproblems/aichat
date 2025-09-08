@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <title>AIChat - Matrix Console</title>
+  <link rel="stylesheet" href="//unpkg.com/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="//unpkg.com/github-markdown-css@5.8.1/github-markdown.css">
+  <link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.10.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="matrix-console-theme.css">
+  <script src="//unpkg.com/@highlightjs/cdn-assets@11.10.0/highlight.min.js" defer></script>
+  <script src="//unpkg.com/marked@15.0.3/lib/marked.umd.js" defer></script>
+  <script src="//unpkg.com/katex@0.16.11/dist/katex.min.js" defer></script>
+  <script src="//unpkg.com/@sigodenjs/marked-katex-extension@1.0.0/lib/index.umd.js" defer></script>
+  <script src="//unpkg.com/alpinejs@3.14.6/dist/cdn.min.js" defer></script>
+  <style>
+    /* Additional Matrix-specific overrides */
+    .app-container {
+      display: flex;
+      height: 100vh;
+      max-width: 1400px;
+      margin: 0 auto;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      margin: 10px;
+      border: 1px solid var(--matrix-green-dark);
+    }
+
+    /* Matrix Sidebar Styles */
+    .sidebar {
+      width: 320px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-primary);
+    }
+
+    .app-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--matrix-green-bright);
+      margin: 0;
+      text-shadow: var(--matrix-glow);
+      font-family: inherit;
+    }
+
+    .app-subtitle {
+      font-size: 0.875rem;
+      color: var(--fg-muted);
+      margin: 0.25rem 0 0 0;
+      font-family: inherit;
+    }
+
+    .sidebar-content {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .settings-group {
+      margin-bottom: 2rem;
+    }
+
+    .settings-group h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--matrix-green-bright);
+      margin: 0 0 1rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 5px currentColor;
+      font-family: inherit;
+    }
+
+    .form-field {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--fg-default);
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 5px currentColor;
+      font-family: inherit;
+    }
+
+    .form-select,
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      background: var(--bg-primary);
+      color: var(--fg-default);
+      transition: all 0.3s ease;
+      font-family: inherit;
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    .form-select:focus,
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(0, 255, 0, 0.1);
+      text-shadow: var(--matrix-glow);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      background: transparent;
+      color: var(--fg-default);
+      font-family: inherit;
+      text-shadow: 0 0 5px currentColor;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      border-color: var(--matrix-green-bright);
+      color: var(--matrix-green-bright);
+      text-shadow: var(--matrix-glow);
+      box-shadow: 0 0 10px var(--matrix-shadow-green);
+    }
+
+    .btn-primary {
+      background: var(--matrix-green-dark);
+      color: var(--matrix-green-bright);
+      border-color: var(--matrix-green);
+    }
+
+    .btn-primary:hover {
+      background: var(--matrix-green);
+      box-shadow: var(--matrix-glow);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    /* Main Chat Area */
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-primary);
+    }
+
+    .chat-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-primary);
+    }
+
+    .model-selector {
+      width: 100%;
+      max-width: 300px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--fg-default);
+      padding: 0.75rem;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 2rem;
+      max-width: 100%;
+      animation: matrix-message-appear 0.5s ease-out;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+      border: 1px solid var(--matrix-green);
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    .message.user .message-avatar {
+      background: var(--matrix-green-bright);
+      color: var(--matrix-black);
+      order: 2;
+      margin-left: 0.75rem;
+      text-shadow: none;
+    }
+
+    .message.assistant .message-avatar {
+      background: var(--matrix-green-dark);
+      color: var(--matrix-green-bright);
+      margin-right: 0.75rem;
+    }
+
+    .message-content {
+      max-width: 70%;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-lg);
+      position: relative;
+      border: 1px solid var(--border-color);
+    }
+
+    .message.user .message-content {
+      background: rgba(0, 255, 0, 0.1);
+      color: var(--matrix-green-bright);
+      border-bottom-right-radius: var(--radius-sm);
+      border-color: var(--matrix-green);
+    }
+
+    .message.assistant .message-content {
+      background: var(--bg-primary);
+      border-bottom-left-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .message-text {
+      margin: 0;
+      line-height: 1.5;
+      word-wrap: break-word;
+      color: var(--fg-default);
+      font-family: inherit;
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    .message.user .message-text {
+      color: var(--matrix-green-bright);
+    }
+
+    .message.assistant .message-content .markdown-body {
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      color: var(--fg-default);
+    }
+
+    .message.assistant .message-content .markdown-body * {
+      color: var(--fg-default) !important;
+      font-family: inherit !important;
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--fg-muted);
+      font-style: italic;
+      font-family: inherit;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--fg-muted);
+      border-radius: 50%;
+      animation: matrix-typing-animation 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Input Area */
+    .input-area {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-primary);
+    }
+
+    .input-container {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      background: var(--bg-primary);
+      transition: all 0.3s ease;
+    }
+
+    .input-container:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(0, 255, 0, 0.1);
+    }
+
+    .message-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 1rem;
+      line-height: 1.5;
+      resize: none;
+      max-height: 120px;
+      min-height: 24px;
+      color: var(--fg-default);
+      font-family: inherit;
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    .send-button {
+      padding: 0.5rem;
+      border: 1px solid var(--matrix-green);
+      background: var(--matrix-green-dark);
+      color: var(--matrix-green-bright);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-button:hover:not(:disabled) {
+      background: var(--matrix-green);
+      box-shadow: var(--matrix-glow);
+    }
+
+    .send-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .send-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Toast Notifications */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      padding: 1rem 1.5rem;
+      background: rgba(0, 0, 0, 0.9);
+      color: var(--matrix-green-bright);
+      border: 1px solid var(--matrix-green-bright);
+      border-radius: var(--radius-md);
+      box-shadow: var(--matrix-glow);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .app-container {
+        margin: 0;
+        border-radius: 0;
+        height: 100vh;
+      }
+      
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 100;
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      
+      .main-area {
+        width: 100%;
+      }
+      
+      .message-content {
+        max-width: 85%;
+      }
+    }
+
+    /* Matrix-specific markdown styling */
+    .markdown-body {
+      background-color: transparent !important;
+      color: var(--fg-default) !important;
+      font-family: inherit !important;
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3,
+    .markdown-body h4,
+    .markdown-body h5,
+    .markdown-body h6 {
+      color: var(--matrix-green-bright) !important;
+      text-shadow: 0 0 5px currentColor !important;
+      border-bottom-color: var(--matrix-green-dark) !important;
+    }
+
+    .markdown-body code {
+      background-color: rgba(0, 255, 0, 0.1) !important;
+      color: var(--matrix-green) !important;
+      border: 1px solid var(--matrix-green-dark) !important;
+      font-family: inherit !important;
+    }
+
+    .markdown-body pre {
+      background-color: rgba(0, 255, 0, 0.05) !important;
+      border: 1px solid var(--matrix-green-dark) !important;
+    }
+
+    .markdown-body pre code {
+      background-color: transparent !important;
+      border: none !important;
+    }
+
+    .markdown-body blockquote {
+      border-left-color: var(--matrix-green) !important;
+      color: var(--fg-muted) !important;
+    }
+
+    .markdown-body a {
+      color: var(--matrix-green-bright) !important;
+      text-decoration: none !important;
+      border-bottom: 1px solid transparent !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .markdown-body a:hover {
+      border-bottom-color: var(--matrix-green-bright) !important;
+      text-shadow: var(--matrix-glow) !important;
+    }
+
+    .markdown-body table {
+      border-color: var(--matrix-green-dark) !important;
+    }
+
+    .markdown-body th,
+    .markdown-body td {
+      border-color: var(--matrix-green-dark) !important;
+    }
+
+    .markdown-body th {
+      background-color: rgba(0, 255, 0, 0.1) !important;
+      color: var(--matrix-green-bright) !important;
+    }
+  </style>
+</head>
+
+<body class="crt-screen">
+  <div class="app-container matrix-panel" x-data="chatApp">
+    <!-- Sidebar -->
+    <div class="sidebar matrix-sidebar" x-ref="sidebar">
+      <div class="sidebar-header matrix-header">
+        <h1 class="app-title matrix-title typewriter">MATRIX_CHAT.EXE</h1>
+        <p class="app-subtitle matrix-subtitle">// NEURAL INTERFACE ACTIVE //</p>
+      </div>
+      
+      <div class="sidebar-content">
+        <!-- Model Settings -->
+        <div class="settings-group">
+          <h3 class="matrix-glow-text">&gt; MODEL_CONFIG</h3>
+          
+          <div class="form-field">
+            <label class="form-label matrix-label" for="model">&gt; AI_MODEL:</label>
+            <select id="model" class="form-select matrix-select" x-model="settings.model">
+              <template x-for="model in models" :key="model.id">
+                <option :value="model.id" x-text="model.id"></option>
+              </template>
+            </select>
+          </div>
+          
+          <div class="form-field">
+            <label class="form-label matrix-label" for="temperature">&gt; TEMPERATURE:</label>
+            <input type="range" id="temperature" class="form-input matrix-input" 
+                   x-model="settings.temperature" min="0" max="2" step="0.1">
+            <small class="matrix-text-dark" x-text="'VALUE: ' + settings.temperature"></small>
+          </div>
+          
+          <div class="form-field">
+            <label class="form-label matrix-label" for="max_tokens">&gt; MAX_TOKENS:</label>
+            <input type="number" id="max_tokens" class="form-input matrix-input" 
+                   x-model.number="settings.max_tokens" min="1" max="4000">
+          </div>
+        </div>
+
+        <!-- System Prompt -->
+        <div class="settings-group">
+          <h3 class="matrix-glow-text">&gt; SYSTEM_PROMPT</h3>
+          
+          <div class="form-field">
+            <label class="form-label matrix-label" for="role">&gt; PRESET_ROLES:</label>
+            <select id="role" class="form-select matrix-select" x-model="settings.role" 
+                    @change="handleRoleChange">
+              <option value="">CUSTOM</option>
+              <template x-for="role in roles" :key="role.name">
+                <option :value="role.name" x-text="role.name"></option>
+              </template>
+            </select>
+          </div>
+          
+          <div class="form-field">
+            <label class="form-label matrix-label" for="prompt">&gt; INSTRUCTIONS:</label>
+            <textarea id="prompt" class="form-textarea matrix-textarea" x-model="settings.prompt"
+                      placeholder="ENTER SYSTEM INSTRUCTIONS..."></textarea>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="settings-group">
+          <h3 class="matrix-glow-text">&gt; ACTIONS</h3>
+          
+          <div class="button-group">
+            <button class="btn matrix-btn btn-sm" @click="clearMessages">
+              CLEAR_CHAT
+            </button>
+            <button class="btn matrix-btn btn-sm" @click="exportChat">
+              EXPORT_DATA
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="main-area">
+      <div class="chat-header matrix-header">
+        <button class="btn matrix-btn btn-sm" @click="toggleSidebar" 
+                x-show="window.innerWidth <= 768">
+          SETTINGS
+        </button>
+        <select class="model-selector matrix-select" x-model="settings.model">
+          <template x-for="model in models" :key="model.id">
+            <option :value="model.id" x-text="model.id"></option>
+          </template>
+        </select>
+      </div>
+      
+      <div class="chat-container matrix-chat-container">
+        <div class="messages-area" x-ref="messagesArea">
+          <!-- Welcome message -->
+          <div class="message assistant matrix-fade-in" x-show="messages.length === 0">
+            <div class="message-avatar matrix-avatar">AI</div>
+            <div class="message-content matrix-message">
+              <div class="message-text matrix-text">
+                <p class="matrix-glow-text">&gt; MATRIX NEURAL INTERFACE INITIALIZED</p>
+                <p>&gt; AVAILABLE FUNCTIONS:</p>
+                <ul>
+                  <li>&gt; QUERY_PROCESSING: ANY_TOPIC</li>
+                  <li>&gt; CODE_ASSISTANCE: DEBUG_MODE</li>
+                  <li>&gt; CONTENT_GENERATION: CREATIVE_MODE</li>
+                  <li>&gt; DATA_ANALYSIS: PROCESS_MODE</li>
+                </ul>
+                <p class="matrix-text-bright">&gt; AWAITING INPUT...</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Messages -->
+          <template x-for="message in messages" :key="message.id">
+            <div class="message matrix-chat-message" :class="message.role">
+              <div class="message-avatar matrix-avatar" 
+                   :class="message.role === 'user' ? 'user' : ''"
+                   x-text="message.role === 'user' ? 'USR' : 'AI'"></div>
+              <div class="message-content matrix-message" :class="message.role">
+                <div class="message-text matrix-text" 
+                     x-show="message.role === 'user'" 
+                     x-text="message.content"></div>
+                <div class="message-text matrix-text" 
+                     x-show="message.role === 'assistant'" 
+                     x-text="message.content || 'PROCESSING...'"
+                     style="white-space: pre-wrap;"></div>
+              </div>
+            </div>
+          </template>
+          
+          <!-- Typing indicator -->
+          <div class="message assistant matrix-fade-in" x-show="isTyping">
+            <div class="message-avatar matrix-avatar">AI</div>
+            <div class="message-content matrix-message">
+              <div class="typing-indicator matrix-typing">
+                <span>&gt; PROCESSING_DATA</span>
+                <div class="typing-dots matrix-typing-dots">
+                  <div class="typing-dot matrix-typing-dot"></div>
+                  <div class="typing-dot matrix-typing-dot"></div>
+                  <div class="typing-dot matrix-typing-dot"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="input-area">
+          <div class="input-container">
+            <textarea class="message-input matrix-input" 
+                      x-model="currentMessage"
+                      placeholder="&gt; ENTER_COMMAND..."
+                      @keydown.enter.prevent="handleEnter"
+                      x-ref="messageInput"
+                      rows="1"></textarea>
+            <button class="send-button matrix-btn" 
+                    @click="sendMessage"
+                    :disabled="!currentMessage.trim() || isTyping">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Toast notification -->
+    <div class="toast matrix-toast" x-ref="toast" x-text="toastMessage"></div>
+  </div>
+
+  <script>
+    const API_BASE = "./v1";
+    const MODELS_API = API_BASE + "/models";
+    const ROLES_API = API_BASE + "/roles";
+    const CHAT_API = API_BASE + "/chat/completions";
+
+    document.addEventListener("alpine:init", () => {
+      setupMarked();
+      
+      Alpine.data("chatApp", () => ({
+        // Data
+        models: [],
+        roles: [{ name: "", prompt: "" }],
+        messages: [],
+        settings: {
+          model: "default",
+          temperature: 0.7,
+          max_tokens: 2000,
+          role: "",
+          prompt: ""
+        },
+        currentMessage: "",
+        isTyping: false,
+        toastMessage: "",
+        messageId: 0,
+
+        // Initialization
+        async init() {
+          await this.loadModels();
+          await this.loadRoles();
+          this.autoResizeTextarea();
+        },
+
+        // Load available models
+        async loadModels() {
+          try {
+            const response = await fetch(MODELS_API);
+            const data = await response.json();
+            this.models = data.data.filter(m => !m.type || m.type === "chat");
+          } catch (error) {
+            this.showToast("FAILED TO LOAD MODELS");
+          }
+        },
+
+        // Load available roles  
+        async loadRoles() {
+          try {
+            const response = await fetch(ROLES_API);
+            const data = await response.json();
+            this.roles.push(...data.data.filter(r => r.prompt));
+          } catch (error) {
+            console.warn("Failed to load roles");
+          }
+        },
+
+        // Handle role selection
+        handleRoleChange() {
+          const selectedRole = this.roles.find(r => r.name === this.settings.role);
+          if (selectedRole) {
+            this.settings.prompt = selectedRole.prompt;
+          }
+        },
+
+        // Auto-resize textarea
+        autoResizeTextarea() {
+          this.$watch('currentMessage', () => {
+            const textarea = this.$refs.messageInput;
+            if (textarea) {
+              textarea.style.height = 'auto';
+              textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            }
+          });
+        },
+
+        // Handle Enter key
+        handleEnter(event) {
+          if (!event.shiftKey) {
+            this.sendMessage();
+          }
+        },
+
+        // Send message
+        async sendMessage() {
+          if (!this.currentMessage.trim() || this.isTyping) return;
+
+          // Add user message
+          const userMessage = {
+            id: ++this.messageId,
+            role: "user",
+            content: this.currentMessage.trim()
+          };
+          this.messages.push(userMessage);
+
+          // Clear input
+          const messageText = this.currentMessage;
+          this.currentMessage = "";
+
+          // Add assistant message placeholder
+          const assistantMessage = {
+            id: ++this.messageId,
+            role: "assistant",
+            content: "",
+            html: ""
+          };
+          this.messages.push(assistantMessage);
+
+          this.isTyping = true;
+          this.scrollToBottom();
+
+          try {
+            await this.streamResponse(messageText, assistantMessage);
+          } catch (error) {
+            assistantMessage.content = "ERROR: " + error.message;
+            assistantMessage.html = marked.marked(assistantMessage.content);
+            this.showToast("ERROR: " + error.message);
+          } finally {
+            this.isTyping = false;
+          }
+        },
+
+        // Stream response from API
+        async streamResponse(messageText, assistantMessage) {
+          const messages = this.buildMessageHistory(messageText);
+          
+          const body = {
+            model: this.settings.model,
+            messages: messages,
+            temperature: this.settings.temperature,
+            max_tokens: this.settings.max_tokens,
+            stream: true
+          };
+
+          const stream = await this.fetchChatCompletions(CHAT_API, body);
+          for await (const chunk of stream) {
+            const content = chunk?.choices[0]?.delta?.content || "";
+            if (content) {
+              assistantMessage.content += content;
+              this.$nextTick(() => {
+                this.scrollToBottom();
+              });
+            }
+          }
+        },
+
+        // Fetch chat completions
+        async fetchChatCompletions(url, body) {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body),
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw error?.error || error;
+          }
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let done = false;
+          let remainingChunkValue = "";
+
+          const streamGenerator = async function* () {
+            while (!done) {
+              const { value, done: doneReading } = await reader.read();
+              done = doneReading;
+              const chunkValue = decoder.decode(value);
+              const lines = (remainingChunkValue + chunkValue).split("\n").filter(line => line.trim().length > 0);
+              remainingChunkValue = "";
+
+              for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const message = line.replace(/^data: /, "");
+                if (message === "[DONE]") {
+                  continue;
+                }
+                try {
+                  const parsed = JSON.parse(message);
+                  yield parsed;
+                } catch {
+                  if (i === lines.length - 1) {
+                    remainingChunkValue += line;
+                    break;
+                  }
+                }
+              }
+            }
+          };
+
+          return streamGenerator();
+        },
+
+        // Build message history for API
+        buildMessageHistory(currentMessage) {
+          const messages = [];
+          
+          // Add system prompt if exists
+          if (this.settings.prompt.trim()) {
+            messages.push({
+              role: "system",
+              content: this.settings.prompt.trim()
+            });
+          }
+
+          // Add previous messages (excluding the last placeholder)
+          for (let i = 0; i < this.messages.length - 1; i++) {
+            const msg = this.messages[i];
+            messages.push({
+              role: msg.role,
+              content: msg.content
+            });
+          }
+
+          // Add current message
+          messages.push({
+            role: "user", 
+            content: currentMessage
+          });
+
+          return messages;
+        },
+
+        // Utility functions
+        scrollToBottom() {
+          this.$nextTick(() => {
+            const area = this.$refs.messagesArea;
+            area.scrollTop = area.scrollHeight;
+          });
+        },
+
+        clearMessages() {
+          this.messages = [];
+          this.showToast("CHAT_CLEARED");
+        },
+
+        exportChat() {
+          const chatData = {
+            settings: this.settings,
+            messages: this.messages,
+            timestamp: new Date().toISOString()
+          };
+          
+          const blob = new Blob([JSON.stringify(chatData, null, 2)], 
+                               { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `matrix-chat-${new Date().toISOString().split('T')[0]}.json`;
+          a.click();
+          
+          URL.revokeObjectURL(url);
+          this.showToast("DATA_EXPORTED");
+        },
+
+        showToast(message) {
+          this.toastMessage = message;
+          const toast = this.$refs.toast;
+          toast.classList.add('show');
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 3000);
+        },
+
+        toggleSidebar() {
+          this.$refs.sidebar.classList.toggle('open');
+        }
+      }));
+    });
+
+    // Setup markdown rendering
+    function setupMarked() {
+      const renderer = {
+        code({ text, lang }) {
+          const validLang = !!(lang && hljs.getLanguage(lang));
+          const highlighted = validLang
+            ? hljs.highlight(text, { language: lang }).value
+            : escapeHtml(text);
+
+          return `<div class="matrix-code" style="position: relative;">
+            <pre style="background: rgba(0, 255, 0, 0.05); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; border: 1px solid var(--matrix-green-dark);"><code class="hljs ${lang}">${highlighted}</code></pre>
+          </div>`;
+        }
+      };
+      
+      marked.use({ renderer });
+      marked.use(markedKatex({ throwOnError: false }));
+    }
+
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+  </script>
+</body>
+
+</html>

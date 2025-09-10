@@ -1,0 +1,948 @@
+# Implementation Plan
+
+- [x] 1. Set up Matrix Console Theme Foundation
+  - Create Matrix-inspired CSS theme with green-on-black color scheme, terminal fonts, and retro aesthetics
+  - Implement typewriter animation effects for text rendering
+  - Add scan line and CRT-style visual effects for authentic Matrix feel
+  - _Requirements: 1.1, 12.1, 12.2, 12.3_
+
+- [ ] 2. Enhance Existing Web Interface with Matrix Styling
+  - Modify the existing enhanced-gui.html to incorporate Matrix console theme
+  - Replace current color scheme with Matrix green/black palette
+  - Add terminal-style fonts and spacing throughout the interface
+  - Implement Matrix-inspired hover effects and transitions for interactive elements
+  - _Requirements: 1.1, 12.1, 12.4_
+
+- [ ] 3. Implement Database Schema and User Management
+- [ ] 3.1 Create Supabase database schema for user management
+  - Write SQL migration scripts for users, chat_sessions, and user_documents tables
+  - Implement user registration and authentication endpoints in Rust backend
+  - Add JWT token generation and validation middleware
+  - _Requirements: 2.1, 2.2, 2.4_
+
+- [ ] 3.2 Integrate authentication with existing aichat server
+  - Extend src/serve.rs to handle authentication endpoints (/auth/login, /auth/register)
+  - Add user context middleware to existing API endpoints
+  - Implement secure API key storage with encryption
+  - _Requirements: 2.3, 2.5_
+
+- [ ] 4. Build API Key Marketplace Backend
+- [ ] 4.1 Implement marketplace database schema and core logic
+  - Create SQL tables for api_key_listings, marketplace_transactions, and user_billing
+  - Write Rust structs and database models for marketplace entities
+  - Implement API key encryption and secure storage mechanisms
+  - _Requirements: 3.1, 3.2_
+
+- [ ] 4.2 Create marketplace API endpoints
+  - Build REST endpoints for listing, purchasing, and managing API keys
+  - Implement dynamic pricing logic with base rate multipliers
+  - Add capacity management and usage tracking for shared API keys
+  - Create request routing system to distribute load across available keys
+  - _Requirements: 3.3, 3.4, 3.5_
+
+- [ ] 5. Integrate Terminal Emulator with Matrix Styling
+- [ ] 5.1 Add xterm.js terminal component to web interface
+  - Install and configure xterm.js library in the frontend
+  - Create WebSocket connection between browser terminal and aichat backend
+  - Implement command routing to execute aichat CLI commands through WebSocket
+  - _Requirements: 11.1, 11.2_
+
+- [ ] 5.2 Synchronize terminal and GUI sessions
+  - Build session synchronization logic between CLI and web interface
+  - Implement state sharing for roles, sessions, and RAG data
+  - Add Matrix-style terminal theme with green text and appropriate fonts
+  - _Requirements: 11.3, 11.4, 12.1_
+
+- [ ] 6. Implement Multi-Provider Chat Interface
+- [ ] 6.1 Create side-by-side multi-provider chat UI
+  - Build responsive layout for displaying multiple AI responses simultaneously
+  - Implement provider selection interface with checkboxes and configuration
+  - Add real-time cost tracking display for each provider
+  - Style components with Matrix console aesthetics
+  - _Requirements: 4.1, 4.2, 4.4, 12.3_
+
+- [ ] 6.2 Integrate marketplace API keys with multi-provider system
+  - Connect marketplace key routing to existing aichat provider system
+  - Implement automatic failover when marketplace keys reach capacity
+  - Add cost calculation and billing integration for marketplace usage
+  - _Requirements: 4.3, 4.5, 3.4_
+
+- [ ] 7. Build Document Processing and Cloud Integration
+- [ ] 7.1 Implement cloud storage API integration
+  - Create Google Drive API client for authentication and file access
+  - Build OneDrive API client for file listing and download
+  - Add unified cloud file browser interface with Matrix styling
+  - _Requirements: 5.2, 5.3_
+
+- [ ] 7.2 Enhance document processing pipeline
+  - Extend existing aichat document processing to handle cloud files
+  - Implement chunking strategy for large documents
+  - Add document context integration with chat interface
+  - Create document management UI with upload progress and status
+  - _Requirements: 5.1, 5.4, 5.5_
+
+- [ ] 8. Implement Web Search Integration
+- [ ] 8.1 Add DuckDuckGo search API integration
+  - Create DuckDuckGo API client for free web search functionality
+  - Implement search result parsing and citation extraction
+  - Add search integration to chat context when relevant
+  - _Requirements: 6.1, 6.3_
+
+- [ ] 8.2 Integrate Google Search API for premium users
+  - Build Google Search API client with API key management
+  - Implement search result ranking and relevance scoring
+  - Add citation display and source linking in chat responses
+  - Create fallback mechanism when search APIs are unavailable
+  - _Requirements: 6.2, 6.4, 6.5_
+
+- [ ] 9. Build Billing and Payment System
+- [ ] 9.1 Implement Stripe payment integration
+  - Set up Stripe API client for payment processing
+  - Create payment endpoints for marketplace transactions
+  - Implement webhook handling for payment confirmations
+  - Add user balance management and transaction tracking
+  - _Requirements: 7.1, 7.2, 7.4_
+
+- [ ] 9.2 Create billing dashboard and payment UI
+  - Build user billing dashboard with transaction history
+  - Implement payment method management interface
+  - Add real-time balance updates and spending alerts
+  - Create payout system for API key providers
+  - _Requirements: 7.3, 7.5_
+
+- [ ] 10. Implement Analytics and Reporting System
+- [ ] 10.1 Create usage analytics backend
+  - Build analytics data collection system for user interactions
+  - Implement database schema for usage_analytics and system_metrics
+  - Create aggregation logic for daily, weekly, and monthly reports
+  - _Requirements: 8.1, 8.2_
+
+- [ ] 10.2 Build analytics dashboard with Matrix styling
+  - Create user analytics dashboard with usage statistics and trends
+  - Implement admin dashboard for system-wide marketplace analytics
+  - Add PDF report generation functionality
+  - Style all analytics components with Matrix console theme
+  - _Requirements: 8.3, 8.4, 8.5, 12.3_
+
+- [ ] 11. Enhance Session and Context Management
+- [ ] 11.1 Extend existing session system for web users
+  - Modify aichat session management to support web user contexts
+  - Implement session persistence across browser sessions
+  - Add session sharing and collaboration features
+  - _Requirements: 9.1, 9.2_
+
+- [ ] 11.2 Implement intelligent context management
+  - Build context summarization for large conversation histories
+  - Create session organization and search functionality
+  - Add context size monitoring and optimization
+  - Implement session archiving and restoration
+  - _Requirements: 9.3, 9.4, 9.5_
+
+- [ ] 12. Build Role and Agent Management System
+- [ ] 12.1 Extend existing role system for web interface
+  - Create web UI for role creation and management
+  - Implement role sharing and marketplace functionality
+  - Add role import/export capabilities
+  - _Requirements: 10.1, 10.3_
+
+- [ ] 12.2 Implement agent system with tool integration
+  - Build agent creation interface combining roles, tools, and documents
+  - Integrate external API and service connections for agents
+  - Add agent performance monitoring and optimization
+  - Create agent marketplace for community sharing
+  - _Requirements: 10.2, 10.4, 10.5_
+
+- [ ] 13. Implement Security and Error Handling
+- [ ] 13.1 Add comprehensive error handling and user feedback
+  - Implement error classification and response system
+  - Create user-friendly error messages with resolution suggestions
+  - Add automatic retry mechanisms for transient failures
+  - Build error logging and monitoring system
+  - _Requirements: All error handling requirements_
+
+- [ ] 13.2 Implement security measures and data protection
+  - Add input validation and sanitization for all user inputs
+  - Implement rate limiting and abuse prevention
+  - Add API key encryption and secure storage
+  - Create audit logging for sensitive operations
+  - _Requirements: 2.5, 3.5, 7.5_
+
+- [ ] 14. Testing and Quality Assurance
+- [ ] 14.1 Write comprehensive unit tests
+  - Create unit tests for all new backend services and endpoints
+  - Write frontend component tests for Matrix UI elements
+  - Implement integration tests for marketplace and billing flows
+  - Add performance tests for concurrent user scenarios
+  - _Requirements: All requirements validation_
+
+- [ ] 14.2 Conduct end-to-end testing and optimization
+  - Perform complete user journey testing from registration to advanced features
+  - Test Matrix console theme across different browsers and devices
+  - Validate security measures and data protection
+  - Optimize performance and fix any identified issues
+  - _Requirements: All requirements validation_
+
+- [ ] 15. Documentation and Deployment Preparation
+- [ ] 15.1 Create user documentation and guides
+  - Write user onboarding guide for Matrix console interface
+  - Create marketplace user guide for buying and selling API keys
+  - Document terminal integration and CLI access features
+  - Build admin documentation for system management
+  - _Requirements: User experience and adoption_
+
+- [ ] 15.2 Prepare deployment configuration and monitoring
+  - Set up production deployment configuration
+  - Implement monitoring and alerting for system health
+  - Create backup and disaster recovery procedures
+  - Add performance monitoring and optimization tools
+  - _Requirements: Production readiness_
+
+
+# Requirements Document
+
+## Introduction
+
+This specification outlines the transformation of the existing aichat CLI tool into a comprehensive web-based graphical environment. The project will leverage aichat's existing multi-provider AI capabilities, local server infrastructure, and core features while adding a modern web interface, API key marketplace, document processing, cloud integrations, and peer-to-peer billing system. The goal is to create an all-in-one AI chat platform that maintains the power of the CLI tool while providing an accessible web interface with advanced marketplace and collaboration features.
+
+## Requirements
+
+### Requirement 1: Web-Based User Interface with Matrix Console Design
+
+**User Story:** As a user, I want to access all aichat functionality through a modern web interface with a Matrix console aesthetic, so that I can interact with AI models in both graphical and command-line modes within the browser.
+
+#### Acceptance Criteria
+
+1. WHEN a user navigates to the web interface THEN the system SHALL display a Matrix-inspired console design with green text on dark backgrounds and retro terminal aesthetics
+2. WHEN a user starts a conversation THEN the system SHALL provide real-time streaming responses from AI models with terminal-style text animation
+3. WHEN a user selects different AI models THEN the system SHALL switch providers seamlessly without losing conversation context
+4. WHEN a user uploads files THEN the system SHALL process documents and integrate them into the chat context
+5. WHEN a user accesses command mode THEN the system SHALL provide a terminal emulator interface within the web browser for direct CLI interaction
+6. IF a user has an active session THEN the system SHALL maintain conversation history across browser sessions
+
+### Requirement 2: Authentication and User Management
+
+**User Story:** As a user, I want secure authentication and profile management, so that I can safely store my API keys and access personalized features.
+
+#### Acceptance Criteria
+
+1. WHEN a user registers THEN the system SHALL create a secure account using Supabase or Appwrite authentication
+2. WHEN a user logs in THEN the system SHALL authenticate credentials and establish a secure session
+3. WHEN a user manages API keys THEN the system SHALL encrypt and securely store OpenRouter and other provider keys
+4. WHEN a user accesses their profile THEN the system SHALL display usage statistics, billing information, and account settings
+5. IF a user enables two-factor authentication THEN the system SHALL require additional verification for sensitive operations
+
+### Requirement 3: API Key Marketplace
+
+**User Story:** As a user, I want to share my API keys with others and earn money, so that I can monetize my unused API capacity while helping others access AI models.
+
+#### Acceptance Criteria
+
+1. WHEN a user lists their API key THEN the system SHALL allow setting custom pricing above OpenRouter base rates
+2. WHEN a user sets capacity limits THEN the system SHALL monitor usage and automatically disable keys when limits are reached
+3. WHEN another user purchases API access THEN the system SHALL process payment through Stripe and grant temporary access
+4. WHEN API usage occurs THEN the system SHALL track costs in real-time and deduct from the buyer's balance
+5. IF an API key becomes unavailable THEN the system SHALL automatically switch to alternative keys or notify the user
+
+### Requirement 4: Multi-Provider Chat Interface
+
+**User Story:** As a user, I want to chat with multiple AI providers simultaneously, so that I can compare responses and get diverse perspectives on my queries.
+
+#### Acceptance Criteria
+
+1. WHEN a user enables multi-provider mode THEN the system SHALL display responses from selected providers side-by-side
+2. WHEN a user sends a message THEN the system SHALL route the query to all selected providers simultaneously
+3. WHEN providers respond at different speeds THEN the system SHALL display each response as it arrives
+4. WHEN a user compares responses THEN the system SHALL show cost breakdown per provider
+5. IF a provider fails THEN the system SHALL continue with remaining providers and display error status
+
+### Requirement 5: Document Processing and Cloud Integration
+
+**User Story:** As a user, I want to upload documents from my computer or cloud storage and chat about their contents, so that I can get AI assistance with document analysis and questions.
+
+#### Acceptance Criteria
+
+1. WHEN a user uploads a document THEN the system SHALL support PDF, DOCX, TXT, and other common formats
+2. WHEN a user connects cloud storage THEN the system SHALL integrate with Google Drive and OneDrive APIs
+3. WHEN a document is processed THEN the system SHALL extract text content and make it available for AI context
+4. WHEN a user asks questions about documents THEN the system SHALL provide contextually relevant answers based on document content
+5. IF a document is too large THEN the system SHALL chunk the content appropriately for AI processing
+
+### Requirement 6: Web Search Integration
+
+**User Story:** As a user, I want AI responses to include current web information, so that I can get up-to-date answers that go beyond the AI model's training data.
+
+#### Acceptance Criteria
+
+1. WHEN a user enables web search THEN the system SHALL integrate DuckDuckGo API for free searches
+2. WHEN a user provides Google Search API key THEN the system SHALL offer premium search capabilities
+3. WHEN AI needs current information THEN the system SHALL automatically perform relevant web searches
+4. WHEN search results are used THEN the system SHALL provide proper citations and source links
+5. IF search APIs are unavailable THEN the system SHALL gracefully fall back to model-only responses
+
+### Requirement 7: Billing and Payment System
+
+**User Story:** As a marketplace participant, I want secure peer-to-peer payments for API usage, so that I can buy and sell API access with confidence.
+
+#### Acceptance Criteria
+
+1. WHEN a user makes a payment THEN the system SHALL process transactions securely through Stripe
+2. WHEN API usage occurs THEN the system SHALL deduct costs from user balance in real-time
+3. WHEN a user earns from API sharing THEN the system SHALL credit their account minus platform fees
+4. WHEN a user requests payout THEN the system SHALL transfer earnings to their connected payment method
+5. IF payment fails THEN the system SHALL suspend API access and notify the user with clear resolution steps
+
+### Requirement 8: Analytics and Reporting
+
+**User Story:** As a user, I want detailed analytics about my AI usage and costs, so that I can optimize my spending and understand my usage patterns.
+
+#### Acceptance Criteria
+
+1. WHEN a user views analytics THEN the system SHALL display usage statistics, cost breakdowns, and trend analysis
+2. WHEN a user generates reports THEN the system SHALL create exportable PDF reports with detailed metrics
+3. WHEN a super admin accesses dashboards THEN the system SHALL show system-wide marketplace analytics
+4. WHEN usage patterns change THEN the system SHALL provide insights and optimization recommendations
+5. IF costs exceed thresholds THEN the system SHALL send alerts and suggest cost-saving measures
+
+### Requirement 9: Session and Context Management
+
+**User Story:** As a user, I want my conversations to maintain context and be accessible across sessions, so that I can continue complex discussions without losing important information.
+
+#### Acceptance Criteria
+
+1. WHEN a user starts a session THEN the system SHALL maintain conversation context throughout the interaction
+2. WHEN a user returns to a previous session THEN the system SHALL restore full conversation history and context
+3. WHEN context becomes too large THEN the system SHALL intelligently summarize older messages while preserving key information
+4. WHEN a user creates multiple sessions THEN the system SHALL organize them with clear naming and search capabilities
+5. IF a session is inactive THEN the system SHALL archive it while maintaining accessibility for future reference
+
+### Requirement 10: Role and Agent Management
+
+**User Story:** As a user, I want to create and use custom AI roles and agents, so that I can tailor AI behavior for specific tasks and workflows.
+
+#### Acceptance Criteria
+
+1. WHEN a user creates a role THEN the system SHALL allow defining custom prompts, model configurations, and behavior parameters
+2. WHEN a user activates an agent THEN the system SHALL combine instructions, tools, and documents into a cohesive AI assistant
+3. WHEN a user shares roles THEN the system SHALL provide a marketplace for community-created roles and agents
+4. WHEN an agent uses tools THEN the system SHALL integrate with external APIs and services securely
+5. IF role configuration conflicts occur THEN the system SHALL provide clear error messages and resolution guidance
+
+### Requirement 11: Integrated Command Line Interface
+
+**User Story:** As a user, I want to access the full aichat CLI functionality through the web interface, so that I can use both graphical and command-line interactions seamlessly within the browser.
+
+#### Acceptance Criteria
+
+1. WHEN a user opens the terminal mode THEN the system SHALL provide a web-based terminal emulator with full aichat CLI access
+2. WHEN a user executes CLI commands THEN the system SHALL process them through the backend aichat engine and display results in the terminal
+3. WHEN a user switches between GUI and CLI modes THEN the system SHALL maintain session state and context across both interfaces
+4. WHEN a user uses CLI features like RAG, sessions, or roles THEN the system SHALL synchronize these with the graphical interface
+5. IF CLI commands require file access THEN the system SHALL provide secure file system integration within the browser environment
+
+### Requirement 12: Matrix Console Aesthetic and User Experience
+
+**User Story:** As a user, I want the interface to have a Matrix console aesthetic with modern graphical components, so that I can enjoy a unique and immersive AI interaction experience.
+
+#### Acceptance Criteria
+
+1. WHEN a user loads the interface THEN the system SHALL display Matrix-style green text on black backgrounds with appropriate fonts and spacing
+2. WHEN text appears THEN the system SHALL use typewriter-style animations and terminal-like text rendering effects
+3. WHEN graphical components are displayed THEN the system SHALL integrate modern UI elements while maintaining the Matrix console theme
+4. WHEN users interact with buttons and controls THEN the system SHALL provide Matrix-inspired hover effects and transitions
+5. IF the user prefers different themes THEN the system SHALL offer alternative color schemes while maintaining the console aesthetic
+
+
+# Design Document
+
+## Overview
+
+This design document outlines the transformation of the existing aichat CLI tool into a comprehensive web-based graphical environment with Matrix console aesthetics. The solution will leverage aichat's existing Rust backend infrastructure while adding a modern web frontend that incorporates marketplace functionality, authentication, document processing, and peer-to-peer billing.
+
+The architecture maintains aichat's core strengths (multi-provider support, local server capabilities, RAG, sessions, roles) while extending it with web-based user management, API key marketplace, cloud integrations, and a Matrix-inspired user interface that seamlessly blends terminal and graphical elements.
+
+## Architecture
+
+### High-Level Architecture
+
+```mermaid
+graph TB
+    subgraph "Frontend Layer"
+        WUI[Web UI - Matrix Console Style]
+        CLI[Integrated CLI Terminal]
+        PWA[Progressive Web App]
+    end
+    
+    subgraph "Backend Services"
+        AUTH[Authentication Service]
+        MARKET[Marketplace Service]
+        BILLING[Billing Service]
+        DOCS[Document Processing]
+        SEARCH[Web Search Service]
+    end
+    
+    subgraph "Existing AIChat Core"
+        SERVER[HTTP Server]
+        MODELS[Multi-Provider Models]
+        RAG[RAG System]
+        SESSIONS[Session Management]
+        ROLES[Role System]
+    end
+    
+    subgraph "External Services"
+        SUPABASE[Supabase/Appwrite]
+        STRIPE[Stripe Payments]
+        CLOUD[Google Drive/OneDrive]
+        OPENROUTER[OpenRouter API]
+    end
+    
+    WUI --> AUTH
+    CLI --> SERVER
+    AUTH --> SUPABASE
+    MARKET --> BILLING
+    BILLING --> STRIPE
+    DOCS --> CLOUD
+    SERVER --> MODELS
+    MODELS --> OPENROUTER
+    MARKET --> MODELS
+```
+
+### Technology Stack Integration
+
+**Frontend Technologies:**
+- **Base Framework**: Enhanced HTML/CSS/JavaScript (building on existing enhanced-gui.html)
+- **Matrix Console Styling**: Custom CSS with terminal aesthetics, green-on-black color schemes
+- **Terminal Emulator**: xterm.js for integrated CLI functionality
+- **Real-time Communication**: WebSockets for live AI responses and terminal interaction
+- **Progressive Web App**: Service workers for offline capability and native app experience
+
+**Backend Extensions:**
+- **Authentication**: Supabase/Appwrite integration with existing Rust server
+- **Database**: PostgreSQL via Supabase for user data, marketplace, billing
+- **Payment Processing**: Stripe API integration for marketplace transactions
+- **Cloud Storage**: Google Drive and OneDrive API integration
+- **Web Search**: DuckDuckGo and Google Search API integration
+
+**Infrastructure:**
+- **Existing AIChat Server**: Extended with new endpoints for marketplace, auth, billing
+- **Database Schema**: User management, API key marketplace, billing, analytics
+- **Security**: JWT tokens, API key encryption, rate limiting, CORS configuration
+
+## Components and Interfaces
+
+### 1. Matrix Console Web Interface
+
+**Design Philosophy:**
+- Matrix-inspired terminal aesthetic with green text on black backgrounds
+- Seamless integration of graphical UI elements within console theme
+- Typewriter animations for text rendering
+- Retro terminal fonts (Courier New, Monaco, Consolas)
+- Glitch effects and scan lines for authentic Matrix feel
+
+**Core Components:**
+
+```typescript
+interface MatrixConsoleTheme {
+  colors: {
+    primary: '#00ff00',      // Matrix green
+    secondary: '#008000',    // Darker green
+    background: '#000000',   // Pure black
+    text: '#00ff00',        // Green text
+    accent: '#ffffff',      // White highlights
+    error: '#ff0000',       // Red for errors
+    warning: '#ffff00'      // Yellow for warnings
+  },
+  fonts: {
+    primary: 'Courier New, Monaco, Consolas',
+    size: '14px',
+    lineHeight: '1.4'
+  },
+  effects: {
+    typewriter: true,
+    scanLines: true,
+    glitch: false,
+    crtCurvature: false
+  }
+}
+```
+
+**Layout Structure:**
+- **Header**: Matrix-style title with animated text effects
+- **Sidebar**: Console-style navigation with ASCII art elements
+- **Main Area**: Chat interface with terminal-style message rendering
+- **Terminal Panel**: Integrated CLI access via xterm.js
+- **Status Bar**: System information in terminal format
+
+### 2. Authentication and User Management System
+
+**Authentication Flow:**
+```mermaid
+sequenceDiagram
+    participant User
+    participant WebUI
+    participant AuthService
+    participant Supabase
+    participant AIChat
+    
+    User->>WebUI: Login Request
+    WebUI->>AuthService: Authenticate
+    AuthService->>Supabase: Verify Credentials
+    Supabase-->>AuthService: JWT Token
+    AuthService-->>WebUI: Auth Success
+    WebUI->>AIChat: API Request with JWT
+    AIChat->>AuthService: Validate Token
+    AuthService-->>AIChat: User Context
+```
+
+**User Profile Schema:**
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  encrypted_api_keys JSONB DEFAULT '{}',
+  subscription_tier VARCHAR(20) DEFAULT 'free',
+  usage_limits JSONB DEFAULT '{}',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE user_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  session_data JSONB,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### 3. API Key Marketplace System
+
+**Marketplace Architecture:**
+```mermaid
+graph LR
+    subgraph "Marketplace Core"
+        LISTINGS[API Key Listings]
+        PRICING[Dynamic Pricing]
+        CAPACITY[Capacity Management]
+        ROUTING[Request Routing]
+    end
+    
+    subgraph "Key Providers"
+        PROVIDER1[User A - GPT-4 Key]
+        PROVIDER2[User B - Claude Key]
+        PROVIDER3[User C - Multiple Keys]
+    end
+    
+    subgraph "Key Consumers"
+        CONSUMER1[User X]
+        CONSUMER2[User Y]
+        CONSUMER3[User Z]
+    end
+    
+    CONSUMER1 --> ROUTING
+    CONSUMER2 --> ROUTING
+    CONSUMER3 --> ROUTING
+    ROUTING --> PROVIDER1
+    ROUTING --> PROVIDER2
+    ROUTING --> PROVIDER3
+```
+
+**Marketplace Data Models:**
+```sql
+CREATE TABLE api_key_listings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  provider_user_id UUID REFERENCES users(id),
+  provider_name VARCHAR(50) NOT NULL, -- 'openrouter', 'openai', etc.
+  encrypted_api_key TEXT NOT NULL,
+  base_price_multiplier DECIMAL(3,2) DEFAULT 1.20, -- 20% markup
+  daily_limit_usd DECIMAL(10,2) DEFAULT 100.00,
+  current_usage_usd DECIMAL(10,2) DEFAULT 0.00,
+  is_active BOOLEAN DEFAULT true,
+  supported_models JSONB DEFAULT '[]',
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE marketplace_transactions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  consumer_user_id UUID REFERENCES users(id),
+  provider_user_id UUID REFERENCES users(id),
+  listing_id UUID REFERENCES api_key_listings(id),
+  model_used VARCHAR(100),
+  tokens_consumed INTEGER,
+  cost_usd DECIMAL(10,4),
+  provider_earnings DECIMAL(10,4),
+  platform_fee DECIMAL(10,4),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### 4. Integrated Terminal Interface
+
+**Terminal Integration:**
+- **xterm.js**: Full-featured terminal emulator in the browser
+- **WebSocket Connection**: Real-time communication with aichat CLI backend
+- **Command Routing**: Direct access to all existing aichat CLI commands
+- **Session Synchronization**: Sync between GUI and CLI sessions
+
+**Terminal Component Architecture:**
+```typescript
+interface TerminalInterface {
+  // Core terminal functionality
+  terminal: Terminal;
+  websocket: WebSocket;
+  
+  // Command handling
+  executeCommand(command: string): Promise<string>;
+  handleCliOutput(output: string): void;
+  
+  // Session management
+  syncWithGUI(): void;
+  loadSession(sessionId: string): void;
+  
+  // Matrix styling
+  applyMatrixTheme(): void;
+  enableTypewriterEffect(): void;
+}
+```
+
+### 5. Multi-Provider Chat Interface
+
+**Enhanced Chat System:**
+```typescript
+interface MultiProviderChat {
+  // Provider management
+  activeProviders: string[];
+  providerConfigs: Map<string, ProviderConfig>;
+  
+  // Chat functionality
+  sendToAllProviders(message: string): Promise<Response[]>;
+  displaySideBySideResponses(responses: Response[]): void;
+  
+  // Cost tracking
+  calculateCostPerProvider(usage: Usage[]): CostBreakdown;
+  displayRealTimeCosts(): void;
+  
+  // Matrix UI integration
+  renderInMatrixStyle(content: string): HTMLElement;
+  animateResponse(text: string): void;
+}
+```
+
+### 6. Document Processing and Cloud Integration
+
+**Document Processing Pipeline:**
+```mermaid
+graph TD
+    UPLOAD[Document Upload] --> DETECT[Format Detection]
+    DETECT --> PDF[PDF Processing]
+    DETECT --> DOCX[DOCX Processing]
+    DETECT --> TXT[Text Processing]
+    
+    PDF --> EXTRACT[Text Extraction]
+    DOCX --> EXTRACT
+    TXT --> EXTRACT
+    
+    EXTRACT --> CHUNK[Content Chunking]
+    CHUNK --> EMBED[Generate Embeddings]
+    EMBED --> STORE[Store in RAG]
+    STORE --> CHAT[Available for Chat]
+    
+    subgraph "Cloud Integration"
+        GDRIVE[Google Drive API]
+        ONEDRIVE[OneDrive API]
+    end
+    
+    GDRIVE --> UPLOAD
+    ONEDRIVE --> UPLOAD
+```
+
+**Cloud Storage Integration:**
+```typescript
+interface CloudStorageService {
+  // Google Drive integration
+  authenticateGoogleDrive(): Promise<void>;
+  listGoogleDriveFiles(): Promise<DriveFile[]>;
+  downloadFromGoogleDrive(fileId: string): Promise<Blob>;
+  
+  // OneDrive integration
+  authenticateOneDrive(): Promise<void>;
+  listOneDriveFiles(): Promise<OneDriveFile[]>;
+  downloadFromOneDrive(fileId: string): Promise<Blob>;
+  
+  // Unified interface
+  processCloudDocument(source: 'gdrive' | 'onedrive', fileId: string): Promise<void>;
+}
+```
+
+## Data Models
+
+### User Management Schema
+
+```sql
+-- Core user table
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  encrypted_api_keys JSONB DEFAULT '{}',
+  subscription_tier VARCHAR(20) DEFAULT 'free',
+  usage_limits JSONB DEFAULT '{"daily_requests": 100, "monthly_spend": 50}',
+  preferences JSONB DEFAULT '{"theme": "matrix", "terminal_enabled": true}',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- User sessions and chat history
+CREATE TABLE chat_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  session_name VARCHAR(100),
+  messages JSONB DEFAULT '[]',
+  context_data JSONB DEFAULT '{}',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Document storage and processing
+CREATE TABLE user_documents (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  filename VARCHAR(255) NOT NULL,
+  file_type VARCHAR(50),
+  file_size INTEGER,
+  cloud_source VARCHAR(20), -- 'gdrive', 'onedrive', 'upload'
+  cloud_file_id VARCHAR(255),
+  processed_content TEXT,
+  embeddings_generated BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Marketplace and Billing Schema
+
+```sql
+-- API key marketplace
+CREATE TABLE api_key_listings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  provider_user_id UUID REFERENCES users(id),
+  provider_name VARCHAR(50) NOT NULL,
+  encrypted_api_key TEXT NOT NULL,
+  key_name VARCHAR(100),
+  base_price_multiplier DECIMAL(3,2) DEFAULT 1.20,
+  daily_limit_usd DECIMAL(10,2) DEFAULT 100.00,
+  monthly_limit_usd DECIMAL(10,2) DEFAULT 1000.00,
+  current_daily_usage DECIMAL(10,2) DEFAULT 0.00,
+  current_monthly_usage DECIMAL(10,2) DEFAULT 0.00,
+  is_active BOOLEAN DEFAULT true,
+  supported_models JSONB DEFAULT '[]',
+  performance_metrics JSONB DEFAULT '{}',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Transaction tracking
+CREATE TABLE marketplace_transactions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  consumer_user_id UUID REFERENCES users(id),
+  provider_user_id UUID REFERENCES users(id),
+  listing_id UUID REFERENCES api_key_listings(id),
+  model_used VARCHAR(100),
+  prompt_tokens INTEGER,
+  completion_tokens INTEGER,
+  total_tokens INTEGER,
+  base_cost_usd DECIMAL(10,4),
+  markup_cost_usd DECIMAL(10,4),
+  total_cost_usd DECIMAL(10,4),
+  provider_earnings DECIMAL(10,4),
+  platform_fee DECIMAL(10,4),
+  transaction_type VARCHAR(20) DEFAULT 'chat_completion',
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Billing and payments
+CREATE TABLE user_billing (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  stripe_customer_id VARCHAR(100),
+  current_balance DECIMAL(10,2) DEFAULT 0.00,
+  total_spent DECIMAL(10,2) DEFAULT 0.00,
+  total_earned DECIMAL(10,2) DEFAULT 0.00,
+  payment_methods JSONB DEFAULT '[]',
+  billing_address JSONB DEFAULT '{}',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Analytics and Reporting Schema
+
+```sql
+-- Usage analytics
+CREATE TABLE usage_analytics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  date DATE NOT NULL,
+  requests_count INTEGER DEFAULT 0,
+  tokens_consumed INTEGER DEFAULT 0,
+  cost_usd DECIMAL(10,4) DEFAULT 0.00,
+  models_used JSONB DEFAULT '{}',
+  session_duration_minutes INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- System-wide metrics
+CREATE TABLE system_metrics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  date DATE NOT NULL,
+  total_users INTEGER DEFAULT 0,
+  active_users INTEGER DEFAULT 0,
+  total_requests INTEGER DEFAULT 0,
+  total_revenue DECIMAL(10,2) DEFAULT 0.00,
+  marketplace_transactions INTEGER DEFAULT 0,
+  average_response_time_ms INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+## Error Handling
+
+### Error Classification and Response Strategy
+
+**1. Authentication Errors:**
+- Invalid credentials → Redirect to login with clear error message
+- Expired tokens → Automatic refresh or re-authentication prompt
+- Insufficient permissions → Display access denied with upgrade options
+
+**2. API Key Marketplace Errors:**
+- Key capacity exceeded → Automatic failover to alternative keys
+- Invalid API keys → Remove from marketplace, notify provider
+- Payment failures → Suspend access, provide payment resolution steps
+
+**3. AI Provider Errors:**
+- Rate limiting → Queue requests and retry with exponential backoff
+- Model unavailable → Suggest alternative models or providers
+- Context length exceeded → Automatic context summarization
+
+**4. Document Processing Errors:**
+- Unsupported format → Display supported formats and conversion options
+- File too large → Implement chunking or size limit warnings
+- Cloud access denied → Re-authentication flow for cloud services
+
+**5. Terminal Integration Errors:**
+- WebSocket disconnection → Automatic reconnection with session restoration
+- Command execution failures → Display error in terminal with suggestions
+- CLI synchronization issues → Manual sync option with conflict resolution
+
+### Error Response Format
+
+```typescript
+interface ErrorResponse {
+  error: {
+    code: string;
+    message: string;
+    details?: any;
+    suggestions?: string[];
+    retryable: boolean;
+  };
+  timestamp: string;
+  requestId: string;
+}
+```
+
+## Testing Strategy
+
+### 1. Unit Testing
+
+**Frontend Components:**
+- Matrix console theme rendering and animations
+- Terminal emulator integration and command handling
+- Multi-provider chat interface functionality
+- Document upload and processing workflows
+- Authentication and session management
+
+**Backend Services:**
+- API key marketplace logic and routing
+- Billing and payment processing
+- User authentication and authorization
+- Document processing and cloud integration
+- Analytics and reporting generation
+
+### 2. Integration Testing
+
+**End-to-End Workflows:**
+- Complete user registration and onboarding flow
+- API key listing and marketplace transaction flow
+- Document upload, processing, and chat integration
+- Multi-provider chat with cost tracking
+- Terminal CLI integration with GUI synchronization
+
+**External Service Integration:**
+- Supabase/Appwrite authentication flows
+- Stripe payment processing and webhooks
+- Google Drive and OneDrive API integration
+- OpenRouter and other AI provider APIs
+- Web search API integration (DuckDuckGo, Google)
+
+### 3. Performance Testing
+
+**Load Testing Scenarios:**
+- Concurrent user sessions and chat interactions
+- Marketplace transaction processing under load
+- Document processing with large files
+- Real-time terminal command execution
+- WebSocket connection stability
+
+**Scalability Testing:**
+- Database performance with growing user base
+- API key routing efficiency at scale
+- Memory usage with multiple active sessions
+- Response times under various load conditions
+
+### 4. Security Testing
+
+**Authentication and Authorization:**
+- JWT token security and expiration handling
+- API key encryption and secure storage
+- User data privacy and access controls
+- Payment information security (PCI compliance)
+
+**Input Validation and Sanitization:**
+- File upload security and malware scanning
+- Command injection prevention in terminal
+- SQL injection prevention in database queries
+- XSS prevention in chat message rendering
+
+### 5. User Experience Testing
+
+**Matrix Console Aesthetics:**
+- Theme consistency across different browsers
+- Animation performance and visual effects
+- Accessibility compliance with screen readers
+- Mobile responsiveness and touch interactions
+
+**Usability Testing:**
+- New user onboarding experience
+- Marketplace discovery and transaction flow
+- Document processing and chat integration
+- Terminal and GUI mode switching
+
+### Testing Tools and Frameworks
+
+**Frontend Testing:**
+- Jest for unit testing JavaScript components
+- Cypress for end-to-end testing workflows
+- Lighthouse for performance and accessibility auditing
+- Browser compatibility testing across major browsers
+
+**Backend Testing:**
+- Rust's built-in testing framework for core logic
+- Integration tests for database operations
+- API testing with Postman/Newman
+- Load testing with Artillery or k6
+
+**Security Testing:**
+- OWASP ZAP for security vulnerability scanning
+- Penetration testing for authentication flows
+- Code analysis with security-focused linters
+- Regular dependency vulnerability scanning

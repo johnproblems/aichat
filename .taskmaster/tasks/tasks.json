@@ -1,0 +1,143 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Implement Matrix Console Theme Foundation",
+        "description": "Create comprehensive Matrix-inspired CSS theme with green-on-black color scheme, terminal fonts, and retro aesthetics",
+        "details": "Build upon the existing matrix-enhanced-gui.html by creating a complete Matrix console theme. Implement CSS variables for Matrix green (#00ff00), dark backgrounds, terminal fonts (Courier New, Monaco, Consolas), typewriter animation effects, scan line overlays, and CRT-style visual effects. Create responsive layouts that work across desktop and mobile. Include hover effects, loading animations, and terminal-style transitions for all UI components.",
+        "testStrategy": "Cross-browser testing for Matrix theme consistency, performance testing for animations, accessibility testing with screen readers, visual regression testing for theme consistency",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Set Up Database Schema and User Management Backend",
+        "description": "Create Supabase database schema and implement user authentication system with JWT tokens",
+        "details": "Set up Supabase/Appwrite integration with PostgreSQL database. Create SQL migration scripts for users, chat_sessions, user_documents, api_key_listings, marketplace_transactions, and billing tables. Implement Rust authentication middleware in src/serve.rs with JWT token generation, validation, and user context management. Add secure API key encryption using existing utils/crypto.rs patterns. Create user registration and login endpoints following existing server architecture.",
+        "testStrategy": "Unit tests for authentication logic, integration tests for database operations, security testing for JWT implementation, load testing for concurrent authentication",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Build API Key Marketplace Core System",
+        "description": "Implement marketplace database schema, API endpoints, and request routing system for API key sharing",
+        "details": "Create marketplace backend logic extending existing client system in src/client/. Implement API key listing management, dynamic pricing with base rate multipliers, capacity tracking, and intelligent request routing across multiple keys. Build REST endpoints for marketplace operations following existing serve.rs patterns. Add encryption for stored API keys using existing crypto utilities. Implement failover mechanisms when keys reach capacity limits.",
+        "testStrategy": "Integration tests for marketplace transactions, load testing for request routing, security testing for API key handling, unit tests for pricing calculations",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Integrate Terminal Emulator with Matrix Styling",
+        "description": "Add xterm.js terminal component with WebSocket connection to aichat backend for CLI access",
+        "details": "Install and configure xterm.js library in the web interface. Create WebSocket endpoints in src/serve.rs for terminal communication. Implement command routing to execute existing aichat CLI commands through WebSocket connection. Add session synchronization between CLI and GUI modes using existing session management in src/config/session.rs. Apply Matrix theme styling to terminal with green text, appropriate fonts, and terminal effects.",
+        "testStrategy": "End-to-end testing for CLI command execution, WebSocket connection stability testing, session synchronization validation, terminal rendering performance testing",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Enhance Multi-Provider Chat Interface",
+        "description": "Create side-by-side multi-provider chat UI with real-time cost tracking and Matrix styling",
+        "details": "Build upon existing multi-provider system in src/client/ to create simultaneous chat interface. Implement responsive layout for displaying multiple AI responses side-by-side. Add provider selection interface with checkboxes and configuration options. Integrate marketplace API key routing with existing provider system. Implement real-time cost calculation and display using marketplace pricing. Add automatic failover when marketplace keys reach capacity. Style all components with Matrix console aesthetics.",
+        "testStrategy": "UI testing for responsive layout, integration testing for marketplace key routing, performance testing for concurrent provider requests, cost calculation accuracy testing",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Implement Document Processing and Cloud Integration",
+        "description": "Build cloud storage API integration and enhance existing document processing pipeline",
+        "details": "Create Google Drive and OneDrive API clients for authentication and file access. Build unified cloud file browser interface with Matrix styling. Extend existing RAG system in src/rag/ to handle cloud files. Implement document upload progress tracking and status display. Add chunking strategy for large documents building on existing splitter system. Create document context integration with chat interface using existing RAG capabilities.",
+        "testStrategy": "API integration testing for cloud services, document processing pipeline validation, large file handling performance testing, RAG integration accuracy testing",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Add Web Search Integration",
+        "description": "Integrate DuckDuckGo and Google Search APIs for current information retrieval",
+        "details": "Create DuckDuckGo API client for free web search functionality. Implement Google Search API integration for premium users. Add search result parsing, citation extraction, and relevance scoring. Integrate search results into chat context when relevant. Build fallback mechanisms when search APIs are unavailable. Add search result display with proper citations and source linking in chat responses.",
+        "testStrategy": "API integration testing for search services, search result accuracy validation, citation link verification, fallback mechanism testing",
+        "priority": "low",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Build Billing and Payment System",
+        "description": "Implement Stripe payment integration with user balance management and payout system",
+        "details": "Set up Stripe API client for payment processing. Create payment endpoints for marketplace transactions. Implement webhook handling for payment confirmations. Add user balance management with real-time updates. Create billing dashboard interface with transaction history styled in Matrix theme. Implement payout system for API key providers. Add spending alerts and budget management features.",
+        "testStrategy": "Payment processing integration testing, webhook security validation, balance calculation accuracy testing, payout system verification",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement Analytics and Reporting System",
+        "description": "Create usage analytics backend with dashboard for user and system-wide metrics",
+        "details": "Build analytics data collection system for user interactions and marketplace transactions. Implement database schema for usage_analytics and system_metrics tables. Create aggregation logic for daily, weekly, and monthly reports. Build user analytics dashboard showing usage statistics, cost breakdowns, and trends with Matrix styling. Implement admin dashboard for system-wide marketplace analytics. Add PDF report generation functionality.",
+        "testStrategy": "Analytics data accuracy validation, report generation performance testing, dashboard UI testing, data aggregation correctness verification",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Enhance Session and Context Management",
+        "description": "Extend existing session system for web users with intelligent context management",
+        "details": "Modify existing session management in src/config/session.rs to support web user contexts. Implement session persistence across browser sessions. Add session sharing and collaboration features. Build context summarization for large conversation histories. Create session organization with search functionality. Add context size monitoring and optimization. Implement session archiving and restoration using existing session infrastructure.",
+        "testStrategy": "Session persistence validation, context summarization accuracy testing, session search functionality verification, collaboration feature testing",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-09-10T08:11:03.659Z",
+      "updated": "2025-09-10T08:30:36.842Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

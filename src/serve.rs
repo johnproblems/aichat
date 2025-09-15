@@ -1,4 +1,4 @@
-use crate::{client::*, config::*, function::*, rag::*, utils::*};
+use crate::{auth::{AuthService, AuthRoutes, AuthMiddleware}, client::*, config::*, function::*, rag::*, utils::*};
 
 use anyhow::{anyhow, bail, Result};
 use bytes::Bytes;
@@ -71,6 +71,9 @@ struct Server {
     models: Vec<Value>,
     roles: Vec<Role>,
     rags: Vec<String>,
+    auth_service: Option<Arc<AuthService>>,
+    auth_routes: Option<Arc<AuthRoutes>>,
+    auth_middleware: Option<Arc<AuthMiddleware>>,
 }
 
 impl Server {
@@ -105,6 +108,9 @@ impl Server {
             models,
             roles: Config::all_roles(),
             rags: Config::list_rags(),
+            auth_service: None,
+            auth_routes: None,
+            auth_middleware: None,
         }
     }
 

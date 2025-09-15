@@ -1,0 +1,212 @@
+// Patch to integrate authentication into serve.rs
+// Add these imports at the top of serve.rs after the existing imports:
+
+use crate::auth::{AuthService, AuthRoutes, AuthMiddleware};
+use crate::database::Database;
+
+// Modify the Server struct to include auth services (around line 69):
+struct Server {
+    config: Config,
+    models: Vec<Value>,
+    roles: Vec<Role>,
+    rags: Vec<String>,
+    auth_service: Option<Arc<AuthService>>,
+    auth_routes: Option<Arc<AuthRoutes>>,
+    auth_middleware: Option<Arc<AuthMiddleware>>,
+}
+
+// Modify the Server::new function to initialize auth services (around line 76):
+impl Server {
+    fn new(config: &GlobalConfig) -> Self {
+        let mut config = config.read().clone();
+        config.functions = Functions::default();
+        let mut models = list_all_models(&config);
+        let mut default_model = config.model.clone();
+        default_model.data_mut().name = DEFAULT_MODEL_NAME.into();
+        models.insert(0, &default_model);
+        let models: Vec<Value> = models
+            .into_iter()
+            .enumerate()
+            .map(|(i, model)| {
+                let id = if i == 0 {
+                    DEFAULT_MODEL_NAME.into()
+                } else {
+                    model.id()
+                };
+                let mut value = json!(model.data());
+                if let Some(value_obj) = value.as_object_mut() {
+                    value_obj.insert("id".into(), id.into());
+                    value_obj.insert("object".into(), "model".into());
+                    value_obj.insert("owned_by".into(), model.client_name().into());
+                    value_obj.remove("name");
+                }
+                value
+            })
+            .collect();
+
+        // Initialize auth services if database is configured
+        let (auth_service, auth_routes, auth_middleware) = if std::env::var("DATABASE_URL").is_ok() {
+            // Try to initialize database and auth
+            match tokio::runtime::Runtime::new() {
+                Ok(rt) => {
+                    match rt.block_on(async {
+                        let db = Database::new().await?;
+                        db.run_migrations().await?;
+                        Ok::<_, anyhow::Error>(db)
+                    }) {
+                        Ok(db) => {
+                            let jwt_secret = std::env::var("JWT_SECRET")
+                                .unwrap_or_else(|_| "default_jwt_secret_change_in_production".to_string());
+                            let auth_service = Arc::new(AuthService::new(
+                                db.pool(),
+                                jwt_secret,
+                                24, // 24 hours expiry
+                            ));
+                            let auth_routes = Arc::new(AuthRoutes::new(auth_service.clone()));
+                            let auth_middleware = Arc::new(AuthMiddleware::new(auth_service.clone()));
+                            (Some(auth_service), Some(auth_routes), Some(auth_middleware))
+                        }
+                        Err(e) => {
+                            log::warn!("Failed to initialize auth services: {}", e);
+                            (None, None, None)
+                        }
+                    }
+                }
+                Err(e) => {
+                    log::warn!("Failed to create runtime for auth initialization: {}", e);
+                    (None, None, None)
+                }
+            }
+        } else {
+            log::info!("DATABASE_URL not set, running without authentication");
+            (None, None, None)
+        };
+
+        Self {
+            config,
+            models,
+            roles: Config::all_roles(),
+            rags: Config::list_rags(),
+            auth_service,
+            auth_routes,
+            auth_middleware,
+        }
+    }
+
+    // Add this method to check if a path requires authentication
+    fn requires_auth(&self, path: &str) -> bool {
+        // Public paths that don't require authentication
+        let public_paths = vec![
+            "/",
+            "/playground",
+            "/arena",
+            "/auth/login",
+            "/auth/register",
+            "/auth/refresh",
+            "/health",
+            "/v1/models",
+        ];
+
+        // Static assets don't require auth
+        if path.starts_with("/static/") || path.starts_with("/assets/") {
+            return false;
+        }
+
+        // Check if path is in public paths
+        !public_paths.contains(&path) && !public_paths.iter().any(|p| path.starts_with(p))
+    }
+
+// Modify the handle method to include auth routing (around line 144):
+    async fn handle(
+        self: Arc<Self>,
+        req: hyper::Request<Incoming>,
+    ) -> std::result::Result<AppResponse, hyper::Error> {
+        let method = req.method().clone();
+        let uri = req.uri().clone();
+        let path = uri.path();
+
+        if method == Method::OPTIONS {
+            let mut res = Response::default();
+            *res.status_mut() = StatusCode::NO_CONTENT;
+            set_cors_header(&mut res);
+            return Ok(res);
+        }
+
+        // Handle auth routes if auth is enabled
+        if path.starts_with("/auth/") {
+            if let Some(auth_routes) = &self.auth_routes {
+                match auth_routes.handle_request(req, path).await {
+                    Ok(res) => {
+                        info!("{method} {uri} {}", StatusCode::OK.as_u16());
+                        return Ok(res.map(|b| b.boxed()));
+                    }
+                    Err(err) => {
+                        error!("{method} {uri} {} {err}", StatusCode::BAD_REQUEST.as_u16());
+                        return Ok(ret_err(err));
+                    }
+                }
+            }
+        }
+
+        // Check authentication for protected routes
+        if self.auth_middleware.is_some() && self.requires_auth(path) {
+            if let Some(auth_middleware) = &self.auth_middleware {
+                match auth_middleware.verify_request(&req).await {
+                    Err(status) => {
+                        let res = Response::builder()
+                            .status(status)
+                            .header("Content-Type", "application/json")
+                            .body(Full::new(Bytes::from(r#"{"error": "Unauthorized"}"#)).boxed())
+                            .unwrap();
+                        return Ok(res);
+                    }
+                    Ok(_claims) => {
+                        // Request is authenticated, continue processing
+                    }
+                }
+            }
+        }
+
+        // Continue with existing routing logic
+        let mut status = StatusCode::OK;
+        let res = if path == "/v1/chat/completions" {
+            self.chat_completions(req).await
+        } else if path == "/v1/embeddings" {
+            self.embeddings(req).await
+        } else if path == "/v1/rerank" {
+            self.rerank(req).await
+        } else if path == "/v1/models" {
+            self.list_models()
+        } else if path == "/v1/roles" {
+            self.list_roles()
+        } else if path == "/v1/rags" {
+            self.list_rags()
+        } else if path == "/v1/rags/search" {
+            self.search_rag(req).await
+        } else if path == "/playground" || path == "/playground.html" {
+            self.playground_page()
+        } else if path == "/arena" || path == "/arena.html" {
+            self.arena_page()
+        } else if path == "/" || path == "/gui" || path == "/gui.html" || path == "/enhanced-gui" {
+            self.enhanced_gui_page()
+        } else {
+            status = StatusCode::NOT_FOUND;
+            Err(anyhow!("Not Found"))
+        };
+        let mut res = match res {
+            Ok(res) => {
+                info!("{method} {uri} {}", status.as_u16());
+                res
+            }
+            Err(err) => {
+                if status == StatusCode::OK {
+                    status = StatusCode::BAD_REQUEST;
+                }
+                error!("{method} {uri} {} {err}", status.as_u16());
+                ret_err(err)
+            }
+        };
+        *res.status_mut() = status;
+        set_cors_header(&mut res);
+        Ok(res)
+    }

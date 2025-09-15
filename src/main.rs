@@ -1,6 +1,8 @@
+mod auth;
 mod cli;
 mod client;
 mod config;
+mod database;
 mod function;
 mod rag;
 mod render;

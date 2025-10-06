@@ -1,12 +1,70 @@
-# AIChat: All-in-one LLM CLI Tool
+# AIChat: All-in-one LLM Platform
 
 [![CI](https://github.com/sigoden/aichat/actions/workflows/ci.yaml/badge.svg)](https://github.com/sigoden/aichat/actions/workflows/ci.yaml)
 [![Crates](https://img.shields.io/crates/v/aichat.svg)](https://crates.io/crates/aichat)
 [![Discord](https://img.shields.io/discord/1226737085453701222?label=Discord)](https://discord.gg/mr3ZZUB9hG)
 
-AIChat is an all-in-one LLM CLI tool featuring Shell Assistant, CMD & REPL Mode, RAG, AI Tools & Agents, and More. 
+AIChat is an all-in-one LLM platform featuring a powerful CLI tool with Shell Assistant, CMD & REPL modes, RAG, AI Tools & Agents, and a comprehensive web interface with Matrix theming, API marketplace, document processing, and cloud integrations.
 
-## Install
+## 🌟 What's New
+
+**AIChat Web Platform Transformation** - AIChat is evolving from a CLI-only tool into a full-featured web platform while maintaining all CLI capabilities. The transformation includes:
+
+- 🎨 **Matrix-Themed Web Interface** - Immersive cyberpunk UI with animated rain effects
+- 🔐 **User Authentication & Sessions** - JWT-based auth with persistent sessions
+- 🏪 **API Key Marketplace** - Buy/sell API access with dynamic pricing & intelligent routing
+- 💳 **Integrated Billing System** - Stripe payments, balance tracking, and automated payouts
+- 🖥️ **Web Terminal Emulator** - Full CLI experience in browser via xterm.js
+- 🔄 **Multi-Provider Chat** - Side-by-side model comparison with real-time cost tracking
+- ☁️ **Cloud Document Processing** - Google Drive & OneDrive integration with RAG
+- 🔍 **Web Search Integration** - DuckDuckGo & Google Search API with citations
+- 📊 **Analytics Dashboard** - Usage metrics, cost analysis, and PDF reports
+
+**Current Status:** Foundation complete (13%) - Authentication system and Matrix theme operational. [View Epic Progress →](https://github.com/johnproblems/aichat/issues/1)
+
+## 🚀 Key Features
+
+### CLI Power User Features
+- **20+ LLM Providers** - OpenAI, Claude, Gemini, Ollama, and more in one tool
+- **Shell Assistant** - Natural language to shell commands
+- **Interactive REPL** - Tab completion, history search, multi-line input
+- **RAG Integration** - Chat with your documents and codebase
+- **AI Agents** - Build custom GPT-like agents with tools and knowledge
+- **Function Calling** - Connect LLMs to external APIs and services
+- **Session Management** - Persistent conversations with context
+
+### Web Platform Exclusive Features
+- **API Marketplace** - Monetize your API keys or find cheaper alternatives
+  - Dynamic pricing with real-time cost calculations
+  - Intelligent routing with automatic failover
+  - Capacity tracking and usage limits
+  - Revenue sharing with automated payouts
+
+- **Multi-Provider Arena** - Compare LLMs side-by-side
+  - Simultaneous queries to multiple providers
+  - Real-time cost comparison per response
+  - Response quality voting and analytics
+  - Export conversation comparisons
+
+- **Cloud Document Hub** - Unified document processing
+  - Google Drive and OneDrive integration
+  - Automatic RAG processing for uploaded files
+  - Citation-aware responses with source links
+  - Collaborative document discussions
+
+- **Analytics & Insights** - Track everything
+  - Usage metrics across all providers
+  - Cost analysis and spending trends
+  - Performance monitoring dashboards
+  - PDF report generation and scheduling
+
+- **Matrix-Themed Experience** - Cyberpunk aesthetics
+  - Animated code rain effects
+  - Terminal-style interface design
+  - Green phosphor text styling
+  - Retro-futuristic UI elements
+
+## 📦 Install
 
 ### Package Managers
 
@@ -20,7 +78,58 @@ AIChat is an all-in-one LLM CLI tool featuring Shell Assistant, CMD & REPL Mode,
 
 Download pre-built binaries for macOS, Linux, and Windows from [GitHub Releases](https://github.com/sigoden/aichat/releases), extract them, and add the `aichat` binary to your `$PATH`.
 
-## Features
+## ⚡ Quick Start
+
+### CLI Usage
+```bash
+# Set your API key (OpenAI example)
+export OPENAI_API_KEY="sk-..."
+
+# Ask a question
+aichat "Explain Rust ownership"
+
+# Start interactive REPL
+aichat
+
+# Use shell assistant
+aichat --execute "find all rust files modified today"
+
+# Chat with documents (RAG)
+aichat --file docs/ "Summarize the architecture"
+
+# Use a specific model
+aichat --model claude:claude-3-5-sonnet "Write a poem"
+```
+
+### Web Platform Usage
+```bash
+# Start the web server
+aichat --serve
+
+# Or on a specific port
+aichat --serve 3000
+
+# Access the platform
+# 1. Open http://localhost:8000 in your browser
+# 2. Create an account or log in
+# 3. Explore the Matrix-themed interface
+# 4. Try the marketplace, multi-provider chat, or terminal
+```
+
+### First-Time Setup
+```bash
+# Configure your LLM providers
+aichat --list-models        # View available models
+aichat --model openai:gpt-4 # Set default model
+
+# Create a custom role
+aichat --role .edit         # Opens editor for new role
+
+# Set up an AI agent
+aichat --agent my-agent .edit   # Configure agent with tools & docs
+```
+
+## 🎯 Features
 
 ### Multi-Providers
 
@@ -105,18 +214,29 @@ AI Agent = Instructions (Prompt) + Tools (Function Callings) + Documents (RAG).
 
 ![aichat-agent](https://github.com/user-attachments/assets/0b7e687d-e642-4e8a-b1c1-d2d9b2da2b6b)
 
-### Local Server Capabilities
+### Local Server & Web Platform
 
-AIChat includes a lightweight built-in HTTP server for easy deployment.
+AIChat includes a powerful built-in HTTP server that serves both APIs and the web interface.
 
-```
+```bash
 $ aichat --serve
 Chat Completions API: http://127.0.0.1:8000/v1/chat/completions
 Embeddings API:       http://127.0.0.1:8000/v1/embeddings
 Rerank API:           http://127.0.0.1:8000/v1/rerank
 LLM Playground:       http://127.0.0.1:8000/playground
 LLM Arena:            http://127.0.0.1:8000/arena?num=2
+Web Platform:         http://127.0.0.1:8000/           (Matrix GUI)
 ```
+
+**Web Platform Features:**
+- **Matrix Console Interface** - Cyberpunk-themed UI with green code rain animation
+- **Authentication Portal** - Secure login/signup with JWT tokens
+- **API Marketplace** - Browse, purchase, and sell API key access
+- **Web Terminal** - Full-featured terminal emulator with xterm.js
+- **Multi-Provider Chat** - Compare responses from multiple LLMs side-by-side
+- **Document Manager** - Upload from cloud storage (Google Drive, OneDrive)
+- **Analytics Dashboard** - Track usage, costs, and performance metrics
+- **Billing Portal** - Manage payments, balance, and transactions
 
 #### Proxy LLM APIs
 
@@ -152,6 +272,7 @@ AIChat supports custom dark and light themes, which highlight response text and 
 
 ## Documentation
 
+### CLI Documentation
 - [Chat-REPL Guide](https://github.com/sigoden/aichat/wiki/Chat-REPL-Guide)
 - [Command-Line Guide](https://github.com/sigoden/aichat/wiki/Command-Line-Guide)
 - [Role Guide](https://github.com/sigoden/aichat/wiki/Role-Guide)
@@ -162,6 +283,123 @@ AIChat supports custom dark and light themes, which highlight response text and 
 - [Custom Theme](https://github.com/sigoden/aichat/wiki/Custom-Theme)
 - [Custom REPL Prompt](https://github.com/sigoden/aichat/wiki/Custom-REPL-Prompt)
 - [FAQ](https://github.com/sigoden/aichat/wiki/FAQ)
+
+### Web Platform Documentation
+- [Web Platform Architecture](.claude/epics/aichat/epic.md) - Technical overview and architecture
+- [API Marketplace Guide](https://github.com/johnproblems/aichat/issues/2) - Buy/sell API keys
+- [Web Terminal Usage](https://github.com/johnproblems/aichat/issues/7) - Browser-based CLI
+- [Multi-Provider Chat](https://github.com/johnproblems/aichat/issues/12) - Model comparison
+- [Document Processing](https://github.com/johnproblems/aichat/issues/17) - Cloud integrations
+- [Billing & Payments](https://github.com/johnproblems/aichat/issues/27) - Stripe integration
+- [Analytics Dashboard](https://github.com/johnproblems/aichat/issues/32) - Usage metrics
+
+## Architecture
+
+AIChat is built in Rust with a modular architecture:
+
+### Core Components
+- **CLI Interface** (`src/cli.rs`) - Clap-based command parsing
+- **Client System** (`src/client/`) - Multi-provider LLM integration (20+ providers)
+- **Server** (`src/serve.rs`) - Hyper-based HTTP/WebSocket server
+- **Configuration** (`src/config/`) - Roles, sessions, agents management
+- **RAG System** (`src/rag/`) - Document processing and vector search
+- **REPL** (`src/repl/`) - Interactive chat with syntax highlighting
+- **Function Calling** (`src/function.rs`) - External tool integration
+
+### Web Platform Stack
+- **Backend:** Rust (Hyper, Tokio, Serde)
+- **Database:** PostgreSQL/Supabase
+- **Frontend:** Matrix-themed HTML/CSS/JS with WebSockets
+- **Terminal:** xterm.js with WebSocket backend
+- **Payments:** Stripe API integration
+- **Cloud Storage:** Google Drive & OneDrive APIs
+- **Search:** DuckDuckGo & Google Custom Search
+
+### Development Roadmap
+
+**Phase 1: Foundation ✅ (Complete)**
+- Matrix-themed web interface with animated code rain
+- PostgreSQL database schema and migrations
+- JWT authentication and user management system
+
+**Phase 2: Marketplace & Payments 🚧 (In Progress)**
+- API key marketplace with listing management
+- Dynamic pricing engine and capacity tracking
+- Intelligent request routing with failover
+- Stripe payment integration and billing system
+- Balance management and automated payouts
+
+**Phase 3: Enhanced UX 📋 (Planned)**
+- xterm.js terminal emulator with WebSocket backend
+- Side-by-side multi-provider chat comparison
+- Real-time cost tracking and analysis
+- Google Drive & OneDrive cloud integration
+- Document processing pipeline with RAG
+
+**Phase 4: Intelligence & Insights 📋 (Planned)**
+- DuckDuckGo & Google Search integration
+- Web search with citation extraction
+- Comprehensive analytics dashboard
+- Usage metrics and PDF report generation
+- System-wide performance monitoring
+
+### Current Development Status
+Track progress in [Epic Issue #1](https://github.com/johnproblems/aichat/issues/1) and individual task issues:
+- ✅ Task 1: Matrix Console Theme Foundation (Complete)
+- ✅ Task 2: Database Schema & User Management (Complete)
+- 🚧 Task 3: API Key Marketplace Core ([#2-6](https://github.com/johnproblems/aichat/issues/2))
+- 🚧 Task 4: Terminal Emulator ([#7-11](https://github.com/johnproblems/aichat/issues/7))
+- 🚧 Task 5: Multi-Provider Chat ([#12-16](https://github.com/johnproblems/aichat/issues/12))
+- 🚧 Task 6: Document Processing ([#17-21](https://github.com/johnproblems/aichat/issues/17))
+- 🚧 Task 7: Web Search Integration ([#22-26](https://github.com/johnproblems/aichat/issues/22))
+- 🚧 Task 8: Billing & Payment System ([#27-31](https://github.com/johnproblems/aichat/issues/27))
+- 🚧 Task 9: Analytics & Reporting ([#32-36](https://github.com/johnproblems/aichat/issues/32))
+
+**Total Progress:** 13% complete (2 of 9 core tasks) • 35 subtasks planned • ~15 weeks estimated
+
+## Contributing
+
+We welcome contributions! See our [Epic roadmap](https://github.com/johnproblems/aichat/issues/1) for areas where help is needed. Each feature has detailed subtasks with implementation guides.
+
+### Development Setup
+```bash
+# Clone repository
+git clone https://github.com/johnproblems/aichat.git
+cd aichat
+
+# Build project
+cargo build
+
+# Run tests
+cargo test
+
+# Start local server
+cargo run -- --serve
+
+# Access web platform
+open http://localhost:8000
+```
+
+### Project Structure
+```
+aichat/
+├── src/                    # Rust source code
+│   ├── cli.rs             # CLI interface
+│   ├── serve.rs           # HTTP/WebSocket server
+│   ├── client/            # Multi-provider LLM clients
+│   ├── config/            # Configuration management
+│   ├── rag/               # Document processing
+│   └── repl/              # Interactive REPL
+├── assets/                # Web UI assets
+│   ├── index.html         # Matrix-themed interface
+│   ├── styles.css         # Cyberpunk styling
+│   └── app.js             # Frontend logic
+├── migrations/            # Database migrations
+├── .claude/               # Claude Code project management
+│   ├── epics/            # Epic and task tracking
+│   └── prds/             # Product requirements
+└── Cargo.toml            # Rust dependencies
+```
 
 ## License
 

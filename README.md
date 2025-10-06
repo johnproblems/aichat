@@ -1,9 +1,5 @@
 # AIChat: All-in-one LLM Platform
 
-[![CI](https://github.com/sigoden/aichat/actions/workflows/ci.yaml/badge.svg)](https://github.com/sigoden/aichat/actions/workflows/ci.yaml)
-[![Crates](https://img.shields.io/crates/v/aichat.svg)](https://crates.io/crates/aichat)
-[![Discord](https://img.shields.io/discord/1226737085453701222?label=Discord)](https://discord.gg/mr3ZZUB9hG)
-
 AIChat is an all-in-one LLM platform featuring a powerful CLI tool with Shell Assistant, CMD & REPL modes, RAG, AI Tools & Agents, and a comprehensive web interface with Matrix theming, API marketplace, document processing, and cloud integrations.
 
 ## 🌟 What's New
@@ -404,6 +400,7 @@ aichat/
 ## License
 
 Copyright (c) 2023-2025 aichat-developers.
+Copyright (c) 2025 FormalHosting - Web Platform Transformation
 
 AIChat is made available under the terms of either the MIT License or the Apache License 2.0, at your option.
 
